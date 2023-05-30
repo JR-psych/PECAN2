@@ -1,35 +1,26 @@
 
 
 
-
-
-#' Title pecanExtract
+#' Title
 #'
+#' @param data
+#' @param p_id
+#' @param edges
+#' @param nodes
+#' @param edges_sep
+#' @param label_in_names
+#' @param labels_sep
+#' @param labels
+#' @import dplyr
+#' @import magrittr
 #'
-#'
-#' @return a list with a node df and an edge df for a specific person
+#' @return
 #' @export
 #'
 #' @examples
-#' @import Hmisc
-#' @import dplyr
-#' @import xts
-#' @import purrr
-#' @import tidyr
-#' @import dplyr
-#' @importFrom dplyr %>%
-#'
-#' @param data df which includes the nodes and edges. Requires a column with the name "p_id"
-#' @param p_id id of the person of interest...
-#' @param edges Specify the columns of the edges e.g. 2:12. Edge names need to have a "to" and a "from" specification within their name and a separator.
-#' Names can be numbers E.g 1_2 equals: "from" = 1 and "to" = 2 or words: Pain_Insomnia equals "from" = Pain and "to" = Insomnia
-#' @param nodes Specify the columns of the nodes e.g. 13:17. Node names must match the edge names!
-#' @param edges_sep How are "from" and "to" separated in the names?
-#' @param label_in_names Logical. Are there additional labels in the node names. Must be separated and be second part of the name. e.g 1_Pain or Insomnia_I couldnt sleep
-#' @param labels_sep How are the labels separated in the node names
-#' @param labels Its possible to just add vector with the labels
-#'
 pecanExtract <- function(data, p_id, edges, nodes, edges_sep,label_in_names = FALSE,labels_sep = "none",labels = "none"){
+
+
   data <- data
   id <- p_id
   edges <- edges
@@ -39,7 +30,7 @@ pecanExtract <- function(data, p_id, edges, nodes, edges_sep,label_in_names = FA
   node_labels <- labels
 
   # get the df  on the person level
-  data_filterd <- data %>% dplyr::filter(p_id == id)
+  data_filterd <- data %>% filter(p_id == id)
 
   # prepare edges df and only select edges which are not NA
   data_edges <- data_filterd %>% dplyr::select(edges)
@@ -97,5 +88,3 @@ pecanExtract <- function(data, p_id, edges, nodes, edges_sep,label_in_names = FA
 }
 
 
-
-#if(nodes_labels[1] != "none"){colnames(data_nodes) <- node_labels}
