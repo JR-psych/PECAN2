@@ -20,7 +20,7 @@ vis_regulation <- function(net_edges, net_nodes, regulation_by, cut_by, cut_off)
   ## if one wants to use regularization on edges
   if(regulation_by != "none"){
 
-    if(regulation_by == "nodes"){if(is.numeric(cut_off)) {cut = trunc(nrow(nodes)*cut_off)} else {cut = nrow(nodes)} # give the maximum number of edges allowed
+    if(regulation_by == "nodes"){if(is.numeric(cut_off)) {cut = trunc(nrow(net_nodes)*cut_off)} else {cut = nrow(net_nodes)} # give the maximum number of edges allowed
       ## regulation by nodes we only want to include a certain number of edges based on the number of nodes we have in the network
       ## cut_off is a weighting variable
       ## but_by is the column on which the regulation should depend on

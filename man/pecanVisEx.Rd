@@ -14,7 +14,7 @@ pecanVisEx(
   labels_sep = "none",
   labels = "none",
   regulation_by = "none",
-  cut_by = "none",
+  cut_by = "width",
   cut_off = "none",
   nodes_color = "red",
   edges_color = "black",

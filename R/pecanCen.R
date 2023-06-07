@@ -6,7 +6,7 @@
 #' Title pecanCen
 #'
 
-#'
+#'@export
 #' @examples
 #' @import dplyr
 

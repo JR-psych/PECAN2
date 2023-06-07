@@ -124,17 +124,17 @@ pecanVis <- function(nodes,edges,regulation_by = "none",cut_by = "none",cut_off 
 
   if(use_seed != "random"){if(is.numeric(use_seed)){s1 <- use_seed}
                            else{stop("use_seed must be numeric")}}
-  else{s1 <- getseed()}
+  else{s1 <- floor(runif(1,-1000000,1000000))}
 
   # name variable
 
   if("p_id" %in% colnames(net_nodes)){s1n <- paste((paste("network_id",p_id,"seed(", sep = "_")),s1,")", sep= "")}
   else {s1n <- paste((paste("network","seed(", sep = "_")),s1,")", sep= "")}
 
-  pecan_edges <<- net_edges %>% dplyr::mutate(used_seed = s1,
-                                      used_width = ifelse(width <= 4, width*1.25,ifelse(width <=6,width*1.5,width*2)))
+  #pecan_edges <<- net_edges %>% dplyr::mutate(used_seed = s1,
+       #                               used_width = ifelse(width <= 4, width*1.25,ifelse(width <=6,width*1.5,width*2)))
 
-  pecan_nodes <<- net_nodes %>% dplyr::mutate(used_seed = s1)
+  #pecan_nodes <<- net_nodes %>% dplyr::mutate(used_seed = s1)
 
    net_edges <- net_edges %>% dplyr::mutate(width_og = width)
    net_edges <- net_edges %>% dplyr::mutate(width = ifelse(width <= 4, width*1.25,ifelse(width <=6,width*1.5,width*2)))
