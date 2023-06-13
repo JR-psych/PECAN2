@@ -15,6 +15,9 @@ pecanExtract(
   labels = "none"
 )
 }
+\arguments{
+\item{labels}{}
+}
 \description{
 Title
 }

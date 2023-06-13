@@ -11,7 +11,7 @@
 #'
 #' @examples
 #' @import dplyr
-#' @import tidyverse
+#'
 #' @import igraph
 #' @import qgraph
 
