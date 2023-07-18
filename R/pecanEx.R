@@ -25,6 +25,7 @@ pecanExtract <- function(data, p_id, edges, nodes, edges_sep,label_in_names = FA
 
   data <- data
   id <- p_id
+  p_id_og <- p_id
   edges <- edges
   nodes <- nodes
   edges_sep <- edges_sep
@@ -81,7 +82,7 @@ pecanExtract <- function(data, p_id, edges, nodes, edges_sep,label_in_names = FA
 
   ## add p_id to node df
 
-  nodes_long <- nodes_long %>% dplyr::mutate(p_id = id)
+  nodes_long <- nodes_long %>% dplyr::mutate(p_id = p_id_og)
 
   # create list with finals dfs
   list("nodes" = nodes_long,
