@@ -15,7 +15,7 @@
 #' @import dplyr
 #' @import magrittr
 #' @import tidyr
-#' @import Hmsic
+#' @import Hmisc
 #' @return
 #' @export
 #'
