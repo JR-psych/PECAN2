@@ -17,7 +17,8 @@ Imports:
     qgraph,
     tidyr,
     visNetwork,
-    xts
+    xts,
+    Hmisc
 Suggests: 
     knitr,
     rmarkdown,
