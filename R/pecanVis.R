@@ -64,6 +64,8 @@
 #' @param use_ranking Should only edges with a certain rank be used? Must be the column which includes the ranks in edges dataframe. E.g, edges$rank
 #' @param min_rank Minimum ranking value included egdes should have. e.g min_rank 3 only includes edges which are ranked 3 or below. Care with negative values Must be numeric
 #' @param use_seed "Default is to random" If u want recreate a network with a certain seed you can set that seed here
+#' @param c_width
+#' @param c_height
 #'
 #' @return A visNetwork object.
 #' @export
@@ -74,7 +76,7 @@
 #' @import dplyr
 #'
 pecanVis <- function(nodes,edges,regulation_by = "none",cut_by = "none",cut_off = "none",nodes_color = "red",edges_color = "black",unweigthed,max10 = 10,arrows = "to",
-                     shadow = "none",shadow_color = "default10",shadow_by = "none",use_ranking = "none",min_rank = "none", use_seed = "random"){
+                     shadow = "none",shadow_color = "default10",shadow_by = "none",use_ranking = "none",min_rank = "none", use_seed = "random", c_width = "100%", c_height = "100%"){
 
 
 
@@ -143,7 +145,7 @@ pecanVis <- function(nodes,edges,regulation_by = "none",cut_by = "none",cut_off 
   visNetwork::visNetwork(nodes = net_nodes, edges = net_edges) %>%
     visNodes(scaling =list(label= FALSE, min = 30,max =50),
              font = list(align = 'left', size = 30, bold = TRUE, strokeWidth = 0.3, strokeColor = "black", background = "white")) %>%
-    visOptions(highlightNearest = TRUE,manipulation = list(enabled = TRUE, editEdgeCols = c("arrows","color","width","label"),
+    visOptions(width = c_width, height = c_height, highlightNearest = TRUE,manipulation = list(enabled = TRUE, editEdgeCols = c("arrows","color","width","label"),
                                                            editNodeCols = c("id","label","color","value"))) %>%
     visInteraction(selectable= TRUE) %>%
     visEdges(arrowStrikethrough = FALSE,arrows = arrows) %>%
