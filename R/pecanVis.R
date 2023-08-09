@@ -142,10 +142,10 @@ pecanVis <- function(nodes,edges,regulation_by = "none",cut_by = "none",cut_off 
    net_edges <- net_edges %>% dplyr::mutate(width = ifelse(width <= 4, width*1.25,ifelse(width <=6,width*1.5,width*2)))
 
  ### eingabe für visNetwork
-  visNetwork::visNetwork(nodes = net_nodes, edges = net_edges) %>%
+  visNetwork::visNetwork(nodes = net_nodes, edges = net_edges, width = c_width, height = c_height) %>%
     visNodes(scaling =list(label= FALSE, min = 30,max =50),
              font = list(align = 'left', size = 30, bold = TRUE, strokeWidth = 0.3, strokeColor = "black", background = "white")) %>%
-    visOptions(width = c_width, height = c_height, highlightNearest = TRUE,manipulation = list(enabled = TRUE, editEdgeCols = c("arrows","color","width","label"),
+    visOptions(highlightNearest = TRUE,manipulation = list(enabled = TRUE, editEdgeCols = c("arrows","color","width","label"),
                                                            editNodeCols = c("id","label","color","value"))) %>%
     visInteraction(selectable= TRUE) %>%
     visEdges(arrowStrikethrough = FALSE,arrows = arrows) %>%

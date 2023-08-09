@@ -20,7 +20,9 @@ pecanVis(
   shadow_by = "none",
   use_ranking = "none",
   min_rank = "none",
-  use_seed = "random"
+  use_seed = "random",
+  c_width = "100\%",
+  c_height = "100\%"
 )
 }
 \arguments{
@@ -77,6 +79,8 @@ if it has a shadow_by value lower or equal to 5 it will get a shadow. If it has 
 \item{min_rank}{Minimum ranking value included egdes should have. e.g min_rank 3 only includes edges which are ranked 3 or below. Care with negative values Must be numeric}
 
 \item{use_seed}{"Default is to random" If u want recreate a network with a certain seed you can set that seed here}
+
+\item{c_height}{}
 }
 \value{
 A visNetwork object.
