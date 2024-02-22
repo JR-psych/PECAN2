@@ -4,7 +4,10 @@
 \alias{vis_edge_color}
 \title{Title vis_edge_color}
 \usage{
-vis_edge_color(net_edges, edges_color)
+vis_edge_color(net_edges, edges_color, neg_edges_color, edge_color_scalig)
+}
+\arguments{
+\item{net_edges}{}
 }
 \description{
 Title vis_edge_color

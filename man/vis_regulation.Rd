@@ -4,7 +4,7 @@
 \alias{vis_regulation}
 \title{Title}
 \usage{
-vis_regulation(net_edges, net_nodes, regulation_by, cut_by, cut_off)
+vis_regulation(net_edges, net_nodes, edges_regulation)
 }
 \description{
 Title

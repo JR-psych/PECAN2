@@ -7,22 +7,49 @@
 pecanVis(
   nodes,
   edges,
-  regulation_by = "none",
-  cut_by = "none",
-  cut_off = "none",
+  nodes_size = "auto",
+  nodes_size_max = "auto",
   nodes_color = "red",
+  nodes_color_by = NULL,
+  nodes_color_max = NULL,
+  nodes_color_scaling = "scaled",
+  nodes_community = NULL,
+  nodes_hide_isolated = FALSE,
+  nodes_label = "auto",
+  nodes_border_color = NULL,
+  nodes_border_color_by = NULL,
+  nodes_border_color_max = NULL,
+  nodes_border_width = NULL,
+  nodes_border_color_use_com = TRUE,
+  nodes_font = NULL,
+  nodes_hidden = NULL,
   edges_color = "black",
-  unweigthed,
-  max10 = 10,
-  arrows = "to",
-  shadow = "none",
-  shadow_color = "default10",
-  shadow_by = "none",
-  use_ranking = "none",
-  min_rank = "none",
+  neg_edges_color = "mediumblue",
+  edges_color_scaling = "fixed",
+  edges_color_by = NULL,
+  edges_color_max = NULL,
+  edges_regulation = NULL,
+  edges_width = "auto",
+  edges_width_max = "auto",
+  edges_arrows = "to",
+  edges_dashes = NULL,
+  edges_hidden = "auto",
+  edges_label = "auto",
+  edges_font = NULL,
+  edges_arrowsScaleFactor = 1,
+  edges_color.inherit = FALSE,
+  edges_selfReference = NULL,
+  edges_smooth = TRUE,
+  edges_widthConstraint = FALSE,
+  edges_arrowStrikethrough = FALSE,
+  edges_endPointOffset = NULL,
   use_seed = "random",
   c_width = "100\%",
-  c_height = "100\%"
+  c_height = "100\%",
+  edit = TRUE,
+  export = TRUE,
+  auto_detect = TRUE,
+  p_id = NULL
 )
 }
 \arguments{
@@ -30,57 +57,14 @@ pecanVis(
 
 \item{edges}{edges data.frame. Must contain a "from" , a "to"  and still a "width" variable. Plan is that width can also be an other variable soon.}
 
-\item{regulation_by}{Should there be a regularization?
-                     Interacts with the cut_off parameter.
-
-                     Can be "nodes","number" or "value". Default is "none"
-
-                     If nodes: Number of edges equals the number of nodes*cut_off
-
-                     If number: The cut_off parameter sets the  number of edges in the network
-
-                     If value: Edges under a specific cut_off are excluded from the network}
-
-\item{cut_by}{Only variable that still need to be specified with a the $ sign e.g. edges$with
-               Thats gonna change soon.
-
-               The variable on the basis of which the number of edges is selected. E.g, Width or certainty}
-
-\item{cut_off}{If regulation_by = nodes: Scaling factor on how many edges should be selected: E.g. if cut_off = 1.5 and there are 10 nodes
-                                         the 15 strongest edges of the cut_by variable are selected
-
-               If regulation_by = number: Number of edges that should be in the network. E.g. if 10 the 10 strongest edges of the
-               cut_by variable are selected
-
-               If regulation_by = value: Cut off value for the edges. Edges that have a cut_by vparameter under that value are excluded from the network}
-
 \item{nodes_color}{Color of the nodes. Default is "red"}
 
 \item{edges_color}{Color of the edges. Default  is "black". Can also be "default10" when edges have a width between 1 and 10. "default10"
 is a combination of grey and black depending on the width of an edge.}
 
-\item{unweigthed}{Not yet implemented. If TRUE it will set default options for unweigthed networks}
-
-\item{max10}{The possible maximum of your width. Must be numeric.
-When your width is not on the scale from 1-10 you can apply this function to scale the maximum of your width to 10.}
-
-\item{arrows}{Where should the arrows be drawn? Can be "to","from","middle" or 'to;from'. Default is "to"}
-
-\item{shadow}{Should some edges have a shadow e.g. to indicate certainty of a specific edge?
-A numeric vector indicating the cutoffs for the variable defined by "shadow_by". E.g. c(2,5) --> if an edges has a shadow_by value below or equal to 2 it won´t get a shadow
-if it has a shadow_by value lower or equal to 5 it will get a shadow. If it has a value over 5 it will get a thicker shadow.}
-
-\item{shadow_color}{Must be a vector of two colors default is c("#87CEFA","#0000CD").Second color for the thicker edge}
-
-\item{shadow_by}{Variable on which basis of the shadows are applied.}
-
-\item{use_ranking}{Should only edges with a certain rank be used? Must be the column which includes the ranks in edges dataframe. E.g, edges$rank}
-
-\item{min_rank}{Minimum ranking value included egdes should have. e.g min_rank 3 only includes edges which are ranked 3 or below. Care with negative values Must be numeric}
+\item{edges_hidden}{}
 
 \item{use_seed}{"Default is to random" If u want recreate a network with a certain seed you can set that seed here}
-
-\item{c_height}{}
 }
 \value{
 A visNetwork object.
