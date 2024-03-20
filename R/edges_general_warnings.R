@@ -7,7 +7,7 @@
 #'
 #' @examples
 edges_general_warnings <- function(net_edges){
-
+#browser()
 if(is.data.frame(net_edges) == FALSE){stop("edges must be a dataframe")}
 if("from" %in% colnames(net_edges) == FALSE){stop("'from' column in edges is missing")}
 if("to" %in% colnames(net_edges) == FALSE){stop("'to' column in edges is missing")}

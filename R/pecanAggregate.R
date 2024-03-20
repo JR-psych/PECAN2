@@ -62,10 +62,13 @@ if(!is.null(nodes_attribute)){
 if(is.null(drop_nodes) == FALSE & is.null(drop_nodes_att)){
   if(is.numeric(drop_nodes) == FALSE){stop("drop_nodes must be numeric or NULL")}
   if((drop_nodes < 1 & drop_nodes > 0) == FALSE){stop("drop nodes must be between 0 and 1")}
-
+  #browser()
   not_na <- colMeans(!is.na(agg_nodes))### to get the percentages?
-  keep_nodes <- names(not_na >= drop_nodes)## das nuss noch verbessert werden, Muss das nicht auch irgendwie für nodes 2 gelten?
-  agg_nodes <- agg_nodes[,keep_nodes]
+  #browser()
+  keep_nodes <- not_na >= drop_nodes## das nuss noch verbessert werden, Muss das nicht auch irgendwie für nodes 2 gelten?
+  #browser()
+  agg_nodes <- agg_nodes[,keep_nodes,drop = FALSE]
+ # browser()
   if(!is.null(nodes_attribute)){agg_att <- agg_att[,keep_nodes]
                               #  colnames(agg_att) <- paste0(colnames(agg_att),attribute_pattern) bruachen wir vllt nicht
                                 }

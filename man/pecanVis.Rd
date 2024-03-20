@@ -7,18 +7,19 @@
 pecanVis(
   nodes,
   edges,
-  nodes_size = "auto",
-  nodes_size_max = "auto",
-  nodes_color = "red",
+  nodes_size = 28,
+  nodes_size_max = NULL,
   nodes_color_by = NULL,
+  nodes_color = "red",
   nodes_color_max = NULL,
   nodes_color_scaling = "scaled",
   nodes_community = NULL,
   nodes_hide_isolated = FALSE,
-  nodes_label = "auto",
+  nodes_label = NULL,
   nodes_border_color = NULL,
   nodes_border_color_by = NULL,
   nodes_border_color_max = NULL,
+  nodes_border_color_scaling = "scaled",
   nodes_border_width = NULL,
   nodes_border_color_use_com = TRUE,
   nodes_font = NULL,
@@ -29,12 +30,12 @@ pecanVis(
   edges_color_by = NULL,
   edges_color_max = NULL,
   edges_regulation = NULL,
-  edges_width = "auto",
-  edges_width_max = "auto",
+  edges_width = 5,
+  edges_width_max = NULL,
   edges_arrows = "to",
   edges_dashes = NULL,
-  edges_hidden = "auto",
-  edges_label = "auto",
+  edges_hidden = NULL,
+  edges_label = NULL,
   edges_font = NULL,
   edges_arrowsScaleFactor = 1,
   edges_color.inherit = FALSE,
@@ -44,11 +45,10 @@ pecanVis(
   edges_arrowStrikethrough = FALSE,
   edges_endPointOffset = NULL,
   use_seed = "random",
-  c_width = "100\%",
-  c_height = "100\%",
+  c_width = 1200,
+  c_height = 750,
   edit = TRUE,
   export = TRUE,
-  auto_detect = TRUE,
   p_id = NULL
 )
 }
@@ -57,14 +57,7 @@ pecanVis(
 
 \item{edges}{edges data.frame. Must contain a "from" , a "to"  and still a "width" variable. Plan is that width can also be an other variable soon.}
 
-\item{nodes_color}{Color of the nodes. Default is "red"}
-
-\item{edges_color}{Color of the edges. Default  is "black". Can also be "default10" when edges have a width between 1 and 10. "default10"
-is a combination of grey and black depending on the width of an edge.}
-
-\item{edges_hidden}{}
-
-\item{use_seed}{"Default is to random" If u want recreate a network with a certain seed you can set that seed here}
+\item{p_id}{}
 }
 \value{
 A visNetwork object.

@@ -1,10 +1,9 @@
 #' Title
 #'
+#' @param nodes_border_color
+#' @param nodes_border_color_max
+#' @param nodes_border_color_scaling
 #' @param net_nodes
-#' @param nodes_color
-#' @param nodes_color_max
-#' @param nodes_color_scaling
-#' @param nodes_color_by
 #'
 #' @return
 #' @export
@@ -54,7 +53,7 @@ vis_nodes_border_color <- function(net_nodes, nodes_border_color, nodes_border_c
     # browser()
     net_nodes <- nodes_combined[order(nodes_combined$st_id),]
     drop_cols <- c("st_id","border_color")
-    net_nodes <- net_nodes[,!drop_cols]
+    net_nodes <- net_nodes[,!names(net_nodes) %in% drop_cols]
     net_nodes}
 
   if(is.list(nodes_border_color) & length(nodes_border_color) == 2 & (all(lengths(nodes_border_color) == 1))){
@@ -71,8 +70,8 @@ vis_nodes_border_color <- function(net_nodes, nodes_border_color, nodes_border_c
       net_nodes$color.border <- i_colors
       net_nodes}
 
-    if(nodes_color_scaling == "scaled"){
-      if(min(i_nodes$border_color) == max(i_nodes$border_color)){
+    if(nodes_border_color_scaling == "scaled"){
+      if(min(net_nodes$border_color) == max(net_nodes$border_color)){
         rgb_i <- colorRamp(c(nodes_border_color[[1]],nodes_border_color[[2]]))((net_nodes$border_color)/10)} #avoid dividing by 0
       else{rgb_i <- colorRamp(c(nodes_border_color[[1]],nodes_border_color[[2]]))(
         (net_nodes$border_color - min(net_nodes$border_color))/(max(net_nodes$border_color) - min(net_nodes$border_color)))
@@ -81,7 +80,7 @@ vis_nodes_border_color <- function(net_nodes, nodes_border_color, nodes_border_c
       net_nodes$color.border <- i_colors
       net_nodes}
     drop_cols <- "border_color"
-    net_nodes <- net_nodes[,drop_cols]
+    net_nodes <- net_nodes[,!names(net_nodes) %in% drop_cols]
     net_nodes}
 
   net_nodes}

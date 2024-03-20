@@ -6,7 +6,8 @@
 \usage{
 pecanExtract(
   data,
-  p_id = NULL,
+  id_col = NULL,
+  id_number = NULL,
   edges,
   nodes,
   labels,
@@ -18,9 +19,6 @@ pecanExtract(
   attribute_name = "attribute",
   edges_direction = "from_to"
 )
-}
-\arguments{
-\item{labels}{}
 }
 \description{
 Title

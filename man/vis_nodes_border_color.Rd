@@ -12,7 +12,7 @@ vis_nodes_border_color(
 )
 }
 \arguments{
-\item{nodes_color_by}{}
+\item{net_nodes}{}
 }
 \description{
 Title

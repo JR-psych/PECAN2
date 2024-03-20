@@ -4,7 +4,7 @@
 \alias{centrality_sev}
 \title{Title centrality_sev}
 \usage{
-centrality_sev(cen_edges, in_df, nodes_id_value, out_in_value)
+centrality_sev(cen_edges, in_df, out_in_value, cen_nodes)
 }
 \value{
 A DF with severity weighted out_degree centrality measures: See Klintwall 2021

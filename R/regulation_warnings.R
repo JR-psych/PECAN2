@@ -24,13 +24,14 @@ regulation_warnings <- function(edges_regulation,edges){
 
   if(is.numeric(edges_regulation$reg_value) == FALSE){stop("reg_value is missing in regulation")}
 
-  if(is.numeric(as.vector(edges[,edges_regulation$reg_by])) == FALSE){stop("reg_by must be numeric")}
+  if(is.numeric(as.vector(edges[,edges_regulation$reg_by, drop = TRUE])) == FALSE){stop("reg_by must be numeric")}
 
   reg_test <- as.numeric(edges[[edges_regulation$reg_by]]) < 0
   if(any(reg_test)){warning("Negative values in reg_by! Abs values are used for
                                                regulation.")}
 
-  if((edges_regulation$reg_type != "nodes" & edges_regulation$reg_by != "number" & edges_regulation$reg_by != "value")){stop("reg_type must be 'nodes','number' or 'value'")}
+  #browser()
+  if((edges_regulation$reg_type != "nodes" & edges_regulation$reg_type != "number" & edges_regulation$reg_type != "value")){stop("reg_type must be 'nodes','number' or 'value'")}
 
   }
 

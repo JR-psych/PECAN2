@@ -4,14 +4,19 @@
 #' Title
 #'
 #' @param data
-#' @param p_id
 #' @param edges
 #' @param nodes
 #' @param edges_sep
-#' @param label_in_names
-#' @param labels_sep
 #' @param labels
-#'
+#' @param id_col
+#' @param id_number
+#' @param nodes_labels
+#' @param label_pattern
+#' @param nodes_attributes
+#' @param attribute_pattern
+#' @param attribute_name
+#' @param edges_direction
+#' @import purrr
 #' @import dplyr
 #' @import magrittr
 #' @import tidyr
@@ -20,40 +25,61 @@
 #' @export
 #'
 #' @examples
-pecanExtract <- function(data, p_id = NULL, edges, nodes, labels, edges_sep,
+pecanExtract <- function(data, id_col = NULL, id_number = NULL,
+                         edges, nodes, labels, edges_sep,
                          nodes_labels = NULL, label_pattern = NULL,
                          nodes_attributes = NULL, attribute_pattern = NULL,
                          attribute_name = "attribute", edges_direction = "from_to"){
 
 
-  ex_info_id = p_id
+  ex_info_id_col <- id_col
+  ex_info_id_number <- id_number
   ex_info_sep = edges_sep
   # get the df  on the person level
-  if(is.null(p_id)){data_filterd <- data[1,,drop = FALSE]}
-  else{data_filterd <- data[data$p_id == p_id,]}
+  if(!is.data.frame(data)){stop("data must be a dataframe")}
+
+  data_filterd <- as.data.frame(data)
+
+  if(is.null(id_col)){data_filterd <- data[1,,drop = FALSE]}
+  else{
+    if("internal_id" %in% names(data_filterd)){stop("no column should be named internal_id")}
+    colnames(data_filterd)[
+      which(names(data_filterd) == id_col)] <- "internal_id"
+    if(is.null(id_number)){stop("id_number is null")}
+
+    data_filterd <- data_filterd[data_filterd$internal_id == id_number,]
+    }
+
 
   # prepare edges df and only select edges which are not NA
-  data_edges <- data_filterd %>% dplyr::select(edges)
-  edges_index <- purrr::map_lgl(data_edges, ~ all(!is.na(.)))
-  data_edges <- data_edges[, edges_index]
 
+  #browser()
+  data_edges <- data_filterd %>% dplyr::select(edges)
+  #browser()
+  edges_index <- purrr::map_lgl(data_edges, ~ all(!is.na(.)))
+  #browser()
+  data_edges <- data_edges[, edges_index]
+ # browser()
   # prepare nodes df and only select nodes which are not NA
+ # browser()
   data_nodes <- data_filterd %>% dplyr::select(nodes)
+ # browser()
   nodes_index <- purrr::map_lgl(data_nodes, ~ all(!is.na(.)))
+ # browser()
   data_nodes <- data_nodes[, nodes_index]
 
-
+ # browser()
   # needed for pivot_longer
   data_edges <- data_edges %>% dplyr::mutate_if(is.character,as.numeric)
   data_nodes <- data_nodes %>% dplyr::mutate_if(is.character,as.numeric)
-
+ # browser()
   # create edges df in long format
   edges_long <- tidyr::pivot_longer(data_edges, cols = everything(), names_to = "edges", values_to = "width")
   edges_long <- edges_long %>% tidyr::separate(edges,c("from","to"),edges_sep) # sep edge names into from an to column
-
+ # browser()
   # create nodes df in long format
   nodes_long <- tidyr::pivot_longer(data_nodes, cols = everything(), names_to = "id", values_to = "value")
-
+ # browser()
   # add labels if they are there
   if(!is.null(nodes_labels)){
     if(is.null(label_pattern)){stop("label_pattern is not defined")}
@@ -73,7 +99,7 @@ pecanExtract <- function(data, p_id = NULL, edges, nodes, labels, edges_sep,
     nodes_long <- merge(nodes_long, labels_long, by = "id", all.x = TRUE, all.y = FALSE)
 
   }
-
+#  browser()
   # add second attribute
 
   if(!is.null(nodes_attributes)){
@@ -126,11 +152,11 @@ if(edges_direction == "to_from"){
     edges_long <- edges_long %>% dplyr::select(from,to,everything())}
 
  # nodes_long <- nodes_long %>% dplyr::mutate(p_id = p_id_og)
-
+ # browser()
   # create list with finals dfs
   list("nodes" = nodes_long,
        "edges" = edges_long,
-       "info" = list(edges_sep = ex_info_sep, p_id = ex_info_id))
+       "info" = list(edges_sep = ex_info_sep, id_col = ex_info_id_col, id_number = ex_info_id_number))
 
 }
 

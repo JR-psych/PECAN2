@@ -4,14 +4,14 @@
 \alias{centrality_out}
 \title{Title centrality_out}
 \usage{
-centrality_out(cen_edges, n_nodes, all_edges_width)
+centrality_out(cen_edges, n_nodes, all_edges_strength)
 }
 \arguments{
 \item{cen_edges}{edges}
 
 \item{n_nodes}{number of nodes within the network}
 
-\item{all_edges_width}{sum of the width of all edges within the network}
+\item{all_edges_strength}{sum of the strength of all edges within the network}
 }
 \value{
 df with out_degree centrality for each node

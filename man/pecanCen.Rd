@@ -4,10 +4,16 @@
 \alias{pecanCen}
 \title{Title pecanCen}
 \usage{
-pecanCen(edges, nodes, sev_weighted = TRUE)
+pecanCen(
+  edges,
+  nodes,
+  centrality_by,
+  sev_weighted = NULL,
+  nodes_label = "auto"
+)
 }
 \arguments{
-\item{edges}{DF with edge columns "from", "to", "width"}
+\item{edges}{DF with edge columns "from", "to", "strength"}
 
 \item{nodes}{DF with nodes columns "id", "value"}
 

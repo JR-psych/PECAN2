@@ -10,8 +10,9 @@
 #' @export
 #'
 #' @examples
-vis_node_color <- function(net_nodes, nodes_color, nodes_color_max, nodes_color_scaling){
+vis_nodes_color <- function(net_nodes, nodes_color, nodes_color_max, nodes_color_scaling){
 
+#browser()
 if(is.list(nodes_color) & (all(lengths(nodes_color) == 2))){
 
     if(!("com" %in% names(net_nodes))){stop("nodes_community is not defined")}
@@ -46,12 +47,14 @@ if(is.list(nodes_color) & (all(lengths(nodes_color) == 2))){
                } # browser()
                i_colors <- rgb(rgb_i[, 1], rgb_i[, 2], rgb_i[, 3], maxColorValue = 255)}
 #cate if range is 0
+  #       browser()
          i_nodes$color.background <- i_colors
+  #       browser()
          nodes_combined <- rbind(nodes_combined, i_nodes)
          #browser()
          nodes_combined}
     #is_valid_color(nodes_combined$color)
-   # browser()
+  #  browser()
     net_nodes <- nodes_combined[order(nodes_combined$st_id),]
     drop_cols <- c("st_id","color")
     net_nodes <- net_nodes[,!names(net_nodes) %in% drop_cols]
@@ -64,10 +67,11 @@ if(is.list(nodes_color) & length(nodes_color) == 2 & (all(lengths(nodes_color) =
     stop("nodes_color_max must be numeric and above 0")}}
  # browser()
   net_nodes <- vis_nodes_color_max(net_nodes = net_nodes,nodes_color_max = nodes_color_max)
-  #browser()
+ # browser()
    if(nodes_color_scaling == "fixed"){
       rgb_i <- colorRamp(c(nodes_color[[1]],nodes_color[[2]]))((net_nodes$color)/10)
       i_colors <- rgb(rgb_i[, 1], rgb_i[, 2], rgb_i[, 3], maxColorValue = 255)
+    #  browser()
       net_nodes$color.background <- i_colors
       net_nodes}
   #browser()
@@ -78,6 +82,7 @@ if(is.list(nodes_color) & length(nodes_color) == 2 & (all(lengths(nodes_color) =
       (net_nodes$color - min(net_nodes$color))/(max(net_nodes$color) - min(net_nodes$color)))
          }
       i_colors <- rgb(rgb_i[, 1], rgb_i[, 2], rgb_i[, 3], maxColorValue = 255)
+    #  browser()
       net_nodes$color.background <- i_colors
       net_nodes}
   drop_cols <- "color"

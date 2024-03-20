@@ -4,14 +4,14 @@
 \alias{centrality_in}
 \title{Title}
 \usage{
-centrality_in(cen_edges, n_nodes, all_edges_width)
+centrality_in(cen_edges, n_nodes, all_edges_strength)
 }
 \arguments{
 \item{cen_edges}{edges df}
 
 \item{n_nodes}{number of nodes within the network}
 
-\item{all_edges_width}{sum of the width of all edges within the network}
+\item{all_edges_strength}{sum of the strength of all edges within the network}
 }
 \value{
 DF with in_degree centrality measures

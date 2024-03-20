@@ -16,10 +16,12 @@
 nodes_color_warnings <- function(net_nodes, nodes_color, nodes_color_max,nodes_color_scaling,nodes_color_by,
                                  nodes_community){
 
+
+#browser()
 if(is.list(nodes_color)){
     if(is.null(nodes_color_by)){stop("Visualization stoped! nodes_color_by is not defined")}
 
-    if(is.numeric(as.vector(net_nodes[,nodes_color_by])) == FALSE){stop("nodes_color_by must be numeric")}
+    if(is.numeric(as.vector(net_nodes[,"color"])) == FALSE){stop("nodes_color_by must be numeric")}
     if(as.numeric(length(nodes_color)) == 2){if(all(as.numeric(lengths(nodes_color))) != 1 & all(as.numeric(lengths(nodes_color)) != 2))
                                                 {stop("Wrong number of elements in nodes_color")}}
     else{ lengths_test <- as.numeric(lengths(nodes_color)) != 2
