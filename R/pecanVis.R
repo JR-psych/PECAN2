@@ -8,55 +8,202 @@
 #'
 #'
 #'
-#' @param nodes nodes data.frame. Must contain an "id" variable for the nodes
-#' @param edges edges data.frame. Must contain a "from" , a "to"  and still a "width" variable. Plan is that width can also be an other variable soon.
-
 #'
-#' @param nodes
-#' @param edges
-#' @param nodes_size
-#' @param nodes_size_max
-#' @param nodes_color_by
-#' @param nodes_color
-#' @param nodes_color_max
-#' @param nodes_color_scaling
-#' @param nodes_community
-#' @param nodes_hide_isolated
-#' @param nodes_label
-#' @param nodes_border_color_by
-#' @param nodes_border_color
-#' @param nodes_border_color_max
-#' @param nodes_border_color_scaling
-#' @param nodes_border_width
-#' @param nodes_border_color_use_com
-#' @param nodes_font
-#' @param nodes_hidden
-#' @param edges_color_by
-#' @param edges_color
-#' @param neg_edges_color
-#' @param edges_color_scaling
-#' @param edges_color_max
-#' @param edges_regulation
-#' @param edges_width
-#' @param edges_width_max
-#' @param edges_arrows
-#' @param edges_dashes
-#' @param edges_hidden
-#' @param edges_label
-#' @param edges_font
-#' @param edges_arrowsScaleFactor
-#' @param edges_color.inherit
-#' @param edges_selfReference
-#' @param edges_smooth
-#' @param edges_widthConstraint
-#' @param edges_arrowStrikethrough
-#' @param edges_endPointOffset
-#' @param use_seed
-#' @param c_width
-#' @param c_height
-#' @param edit
-#' @param export
-#' @param p_id
+#'
+#' @param nodes A data frame containing the nodes values. Must have at least a column named “id” to
+#' uniquely identify each node (see https://datastorm-open.github.io/visNetwork/nodes.html).
+#' @param edges A data frame containing the edge values. Each row represents an edge and
+#' must have at least two columns named "from" and "to" to specify the source and target nodes
+#' of each edge (see https://datastorm-open.github.io/visNetwork/edges.html).
+#' @param nodes_size Specifies the column name, number, or numeric vector on which the node
+#' size should be based.
+#' This parameter determines the size of nodes in the plot. By default, it is set to  28.
+#'  If a "size" column is specified, the values will be rescaled so that the maximum node
+#'  size is 33. Alternatively, if the input is a number or numeric vector, the size of the
+#'  nodes will be equal to that vector.
+#' @param nodes_size_max A number which specifies the maximum possible value of the
+#' “size” column if it is detected or specified. This parameter is useful, for example,
+#'  if size is based on severity (ranging from 1 to 100), but no participant reported the
+#'   maximum value of 100. If nodes_size_max is set to 100, then the rescaling will be based
+#'    on that value rather than the maximum input. If this parameter is not defined, it will be
+#'     set to the maximum of the input values. Default is NULL.
+#' @param nodes_color_by Specifies whether nodes should be colored based on values of a
+#' specific column. If this parameter is set, it should be the name of the column in the
+#'  dataset to base the node colors on. By default, this parameter is set to NULL, indicating
+#'  that no specific column is selected for coloring nodes.
+#' @param nodes_color Specifies the colors of the nodes. If nodes_color_by is defined,
+#'  it must be a list containing the desired color spectrum.
+#'  For example: list("red", "darkred"). If communities are defined (see nodes_community),
+#'   the list needs to contain one vector for each community, with two colors specified for
+#'   each community. For example: list(c("red", "darkred"), c("lightblue", "blue")).
+#'   If nodes_color_by is not defined, it can take one of the following forms:
+#'   The column name containing the colors or a single color specified as a string.
+#'   For example: "red" (default)
+#' @param nodes_color_max A number which specifies the maximum possible value of the
+#' “nodes_color_by” column if it is detected or specified. This parameter is useful,
+#' for example, if color is based on severity (ranging from 1 to 100), but no participant
+#' reported the maximum value of 100. If nodes_color_max is set to 100, then the rescaling
+#' will be based on that value rather than the maximum input. If this parameter is not defined,
+#'  it will be set to the maximum of the input values.
+#' @param nodes_color_scaling Specifies how the distance between the coloring of the values
+#'  should be defined. It can take one of two values: "fixed": The distance between the colors
+#'   is evenly spread from 0 to the maximum value. "scaled": The distance between the colors is
+#'    scaled from the minimum to the maximum value, enabling clearer coloring separation within
+#'     the network. By default, this parameter is set to "scaled".
+#' @param nodes_community Specifies the name of the column which specifies the communities for
+#' each node. This parameter allows users to define communities within the network by specifying
+#'  the column name containing the community information for each node. By default, this
+#'   parameter is set to NULL.
+#' @param nodes_hide_isolated Specifies whether nodes which are not connected to other nodes
+#' should be hidden in the network. This parameter is a logical value. When set to TRUE, nodes
+#'  without any connections to other nodes will be hidden in the network visualization.
+#'  By default, this parameter is set to FALSE.
+#' @param nodes_label Specifies the column name containing the labels for nodes. This parameter
+#' allows users to define labels for nodes based on a specified column in the dataset.
+#' By default, this parameter is set to NULL
+#' @param nodes_border_color_by Specifies whether node borders should be colored based on
+#' values of a specific column. If this parameter is set, it should be the name of the column
+#'  in the dataset to base the node border colors on. By default, this parameter is set to NULL
+#' @param nodes_border_color Specifies the colors of the nodes borders.
+#' If nodes_border_color_by is defined, it must be a list containing the desired color spectrum.
+#'  For example: list("red", "darkred"). If communities are defined (see nodes_community),
+#'  the list needs to contain one vector for each community, with two colors specified for
+#'  each community. For example: list(c("red", "darkred"), c("lightblue", "blue")).
+#'  If nodes_border_color_by is not defined, it can take one of the following forms:
+#'  The column name containing the colors or a single color specified as a string.
+#'  For example: "red" (default)
+#' @param nodes_border_color_max A number which specifies the maximum possible value of the
+#' “nodes_border_color_by” column if it is detected or specified. This parameter is useful,
+#'  for example, if border color is based on severity (ranging from 1 to 100),
+#'  but no participant reported the maximum value of 100. If nodes_border_color_max is set to
+#'  100, then the rescaling will be based on that value rather than the maximum input.
+#'  If this parameter is not defined, it will be set to the maximum of the input values.
+#' @param nodes_border_color_scaling Specifies how the distance between the coloring of the
+#' values should be defined. It can take one of two values: "fixed": The distance between the
+#'  colors is evenly spread from 0 to the maximum value. "scaled": The distance between the
+#'  colors is scaled from the minimum to the maximum value, enabling clearer coloring
+#'  separation within the network. By default, this parameter is set to "scaled".
+#' @param nodes_border_width Specifies the width of the nodes' borders. This parameter can
+#'  either be a numeric value indicating the width of the borders or the name of a column
+#'  in the dataset containing the values for the border widths. By default, this parameter
+#'  is set to NULL.
+#' @param nodes_border_color_use_com Specifies whether communities should be used to color
+#' the nodes' borders. This parameter is a logical value. When set to TRUE, the communities
+#'  defined for nodes will be used to color their borders. By default, this parameter is set
+#'  to TRUE.
+#' @param nodes_font This parameter must be either NULL or a list containing node font
+#' properties. By default, this parameter is set to NULL. If this parameter is NULL and
+#' labels are used the following settings are used: list(align = 'left', size = 30,
+#' bold = TRUE, strokeWidth = 0.3, strokeColor = "black", background = "white")
+#' (see https://visjs.github.io/vis-network/docs/network/nodes.html)
+#' @param nodes_hidden Specifies whether specific nodes should be hidden. If this parameter
+#' is set, it should be the name of a column in the dataset containing logical values
+#'  (TRUE/FALSE) indicating whether each node should be hidden or not. By default, this
+#'  parameter is set to NULL
+#' @param edges_color_by Specifies whether edges should be colored based on values of a
+#' specific column. If this parameter is set, it should be the name of the column in the
+#' dataset to base the edge colors on. By default, this parameter is set to NULL.
+#' @param edges_color Specifies the colors of the (positive) edges. If edges_color_by is
+#' defined, it must be a vector containing the desired color spectrum.
+#' For example: c("lightgrey", "black"). If edges_color_by is not defined, it can take one
+#'  of the following forms: The column name containing the colors or a single color specified
+#'  as a string. For example: "black" (default)
+#' @param neg_edges_color Specifies the colors of the (negative) edges, which is only applied
+#' if edges_color_by is defined. This parameter can either be: One color specified as a string.
+#'  For example:        "blue" or a color spectrum specified as a vector.
+#'  For example: c("lightblue", "blue").
+#' @param edges_color_scaling Specifies how the distance between the coloring of the
+#' values should be defined. It can take one of two values: "fixed": The distance between
+#' the colors is evenly spread from 0 to the maximum value. "scaled": The distance between
+#' the colors is scaled from the minimum to the maximum value, enabling clearer coloring
+#' separation within the network. By default, this parameter is set to "scaled".
+#' @param edges_color_max Specifies the maximum possible value of the “edges_color_by” column
+#' if it is specified. This parameter is useful, for example, if color is based on edge
+#'  strength (ranging from 1 to 10), but no participant reported the maximum value of 10.
+#'  If edges_color_max is set to 10, then the rescaling will be based on that value rather
+#'  than the maximum input. If this parameter is not defined, it will be set to the maximum
+#'  of the input values.
+#' @param edges_regulation Specifies whether edges should be regulated. It requires a list
+#' with the following elements: “reg_by”,”reg_type”,”reg_value”. reg_by: The name of the
+#' column used to base the regulation on. reg_type: The type of regulation, which can be one
+#' of the following: (1) "nodes": The number of edges in the network equals the number of
+#'  nodes. In this case, the parameter reg_value defines how scaled this should be.
+#'  For example, if reg_type is set to "nodes" and reg_value is set to 1.5 in a network of
+#'   10 nodes, it allows for 15 edges. (2) "number": The maximum number of edges equals the
+#'   number of edges defined by reg_value. For example, if reg_type is set to "number" and
+#'   reg_value is set to 12, it allows a maximum of 12 edges. (3) "value": Edges weaker than
+#'   a value defined by reg_value are included in the network. For example, if reg_type is
+#'   set to "value" and reg_value is set to 5, only edges with a value of 5 and higher are
+#'   included. Only absolute values are used in reg_by. By default this parameter is set to
+#'   NULL
+#' @param edges_width Specifies the width of an edge. This parameter can be: A numeric value
+#' indicating the width of the edge. A column name from which the edge width should be based.
+#'  A numeric vector specifying different widths for each edge. If the input is a column name,
+#'   values are rescaled so that the maximum width is 10. By default, the width is set to 5.
+#' @param edges_width_max Specifies the maximum possible value of the "edges" column if it is
+#'  specified. This parameter is useful, for example, if the width is based on edge strength
+#'   (ranging from 1 to 100), but no participant reported the maximum value of 100. If
+#'   edges_width_max is set to 100, then the rescaling will be based on that value rather than the
+#'    maximum input. If this parameter is not defined, it will be set to the maximum of the
+#'    input values.
+#' @param edges_arrows Specifies the direction of the arrows for the edges. This parameter can
+#' take one of the following values: "from": Arrows point from the source nodes to the target
+#' nodes. "to": Arrows point from the source nodes to the target nodes. "middle": Arrows are
+#' placed in the middle of the edges."none": No arrows are displayed. "auto": The edges
+#' dataframe must contain a column named "arrows" which provides the arrow information for
+#' each edge. Can also be a combination of “from”, “to” and “middle” By default, the arrows
+#' are set to "to".
+#' @param edges_dashes Specifies whether the edges should be rendered as dashed lines.
+#' This parameter allows users to specify a column containing logical arguments indicating
+#'  which edges should be rendered as dashed lines. By default, this parameter is set to NULL
+#' @param edges_hidden Specifies whether some edges should be hidden. This parameter allows
+#' users to specify a column containing logical arguments indicating which edges should be
+#' hidden. By default, this parameter is set to NULL.
+#' @param edges_label Specifies the column defining the label of an edge. This parameter allows
+#'  users to specify the name of a column containing the labels for edges. By default,
+#'  this parameter is set to NULL.
+#' @param edges_font This parameter must be either NULL or a list containing font properties.
+#'  If not specified and edges_label is specified, the font is placed in the middle of the
+#'  edges (see https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param edges_arrowsScaleFactor Number specifying the scale factor of the edges.
+#'  By default, this parameter is set to 1.
+#'  (See https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param edges_color.inherit Specifies whether edges should be colored based on their nodes.
+#'  This parameter is a logical value. When set to TRUE, edges are colored based on their
+#'   connecting nodes. By default, this parameter is set to FALSE
+#'   (see https://visjs.github.io/vis-network/docs/network/edges.html).
+#' @param edges_selfReference This parameter must be either NULL or a list containing
+#' self-reference properties. (See https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param edges_smooth This parameter must be either NULL or a list containing curve properties
+#'  of edges (See https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param edges_widthConstraint If set to number it specifies whether the width of
+#' edge labels should be constrained. By default, this parameter is set to
+#' FALSE (See https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param edges_arrowStrikethrough Logical parameter specifying whether edges should stop
+#' at the arrow? By default, this parameter is set to FALSE.
+#' (see https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param edges_endPointOffset This parameter must be either NULL or a list containing
+#'  edges endpoint properties (see https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param use_seed Specifies the method for placing nodes. This parameter can be set to:
+#' "random": Nodes are placed randomly. A numeric value: Specifies the seed for random
+#' placement, ensuring the same network layout for reproducibility. By default, this parameter
+#'  is set to "random".
+#' @param c_width Width of the canvas in percentage or pixel.
+#' (see https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param c_height Height of the canvas in percentage or pixel.
+#' (see https://visjs.github.io/vis-network/docs/network/edges.html)
+#' @param edit Specifies whether the visNetwork manipulation module should be enabled.
+#' This parameter is a logical value. When set to TRUE, the manipulation module is enabled.
+#'  By default, this parameter is set to TRUE.
+#'  See (https://visjs.github.io/vis-network/docs/network/manipulation.html#)
+#' @param export Specifies whether the visNetwork export module for PNGs should be enabled.
+#' This parameter is a logical value. When set to TRUE, the export module for PNGs is enabled,
+#'  allowing users to export the network visualization as PNG images. By default, this
+#'  parameter is set to TRUE
+#' @param p_id Specifies whether a participant ID should be included in the name of the
+#' exported picture. This parameter can be either a character or a number. If specified,
+#' the participant ID will be included in the name of the exported picture. By default,
+#' this parameter is set to NULL, indicating that no participant ID will be included.
 #'
 #' @return A visNetwork object.
 #' @export
@@ -237,7 +384,7 @@ if(edges_arrows != "none" & edges_arrows != "auto"){
  if(!is.logical(edges_arrowStrikethrough)){stop("edges_arrowStrikethrough must be logial")}
 
  if(!is.null(edges_endPointOffset)){if(!is.list(edges_endPointOffset)){stop("edges_endPointOffset must be NULL or list")}}
- if(is.null(edges_endPointOffset)){edges_endPointOffset <- list(from = 0, to = 10)}
+ if(is.null(edges_endPointOffset)){edges_endPointOffset <- list(from = 0, to = 0)}
 
 
 
