@@ -8,16 +8,93 @@ pecanAggregate(
   data,
   nodes = NULL,
   edges = NULL,
+  edges_sep = NULL,
   nodes_attribute = NULL,
   drop_nodes = NULL,
   drop_nodes_att = NULL,
-  attribute_pattern = NULL,
-  edges_sep = NULL
+  attribute_pattern = NULL
 )
 }
 \arguments{
-\item{edges_sep}{}
+\item{data}{This parameter should be a dataframe where each row represents a person or timepoint, and the columns contain
+specific values for the nodes and edges corresponding to that person or timepoint.}
+
+\item{nodes}{Specifies the positions of nodes columns in the dataframe. E.g. 1:10}
+
+\item{edges}{Specifies the positions of edges columns in the dataframe. E.g. 11:100.  Each edge should be represented by a
+combination of node names separated by a specified separator. For example, if an edge connects nodes "pain" and "insomnia",
+it could be represented as "pain_insomnia" in the dataframe.}
+
+\item{edges_sep}{Specifies the separator for the edges in the dataframe. E.g. “_”}
+
+\item{nodes_attribute}{Specifies the positions of columns containing a second node attribute. E.g. 11:20. This could be additional
+information collected alongside the main attribute (e.g., frequency) for each node. For example, if data is collected on both
+frequency and severity for each node, these columns could contain the severity values.}
+
+\item{drop_nodes}{Specifies the threshold for excluding nodes not present in a certain proportion of the population. This parameter should
+be a number between 0 and 1, indicating the proportion of the population below which nodes should be excluded. For example, if set to 0.2,
+nodes that are not present in at least 20% of the population will be excluded from the analysis.}
+
+\item{drop_nodes_att}{Specifies the threshold for excluding nodes based on whether the attribute is not present in a certain proportion of
+the population. This parameter should be a number between 0 and 1, indicating the proportion of the population below which nodes should be
+excluded if the attribute is not present for them. For example, if set to 0.2, nodes for which the attribute is not present in at least 20%
+of the population will be excluded from the analysis.}
+
+\item{attribute_pattern}{Specifies the pattern used in the attributes columns. This parameter should be a character specifying the
+pattern used in the column names of the attributes to assign them to the nodes. The column names of the attributes must be constructed
+by combining the names of the nodes with this specified pattern. For example, if the pattern is ".freq", and the nodes are named "pain"
+and "insomnia", the attribute columns should be named "pain.freq" and "insomnia.freq".}
+}
+\value{
+A list with the following components:
+\describe{
+    \item{agg_nodes}{A dataframe with follwoing columns:
+      \describe{
+       \item{nodes}{Node names}
+        \item{per}{Percent of timepoint/person for wich there was a non-NA value}
+        \item{mean_oa}{The mean if Na´s are treated as 0}
+        \item{sd_oa}{The sd if Na´s are treated as 0}
+        \item{mean}{The mean if the node was present (na.rm = TRUE)}
+        \item{sd}{The sd if the node was present (na.rm = TRUE)}
+        \item{median_oa}{The median if Na´s are treated as 0}
+        \item{iqr_oa}{The iqr if Na´s are treated as 0}
+        \item{median}{The median if the node was present (na.rm = TRUE)}
+        \item{iqr}{The iqr if the node was present (na.rm = TRUE)}
+      }
+    }
+    \item{agg_edges}{
+    \describe{
+        \item{edges}{Edge names}
+        \item{per_oa}{Percentage of persons/timepoints who reported the edges}
+        \item{per_ch}{Percentage of persons/timepoints for which the edge could potentially exist (both nodes were present).}
+        \item{per_ip}{Percentage of individuals/timepoints reporting the presence of the edge when both nodes were present.}
+        \item{mean_oa}{The mean if Na´s are treated as 0}
+        \item{sd_oa}{The sd if Na´s are treated as 0}
+        \item{mean}{The mean if the edge was present (na.rm = TRUE)}
+        \item{sd}{The sd if the edge was present (na.rm = TRUE)}
+        \item{mean_ip}{The mean value across all individuals/timepoints (Na treated as 0) where the edge could potentially exist (both nodes were present)}
+        \item{sd_ip}{The sd value across all individuals/timepoints (Na treated as 0) where the edge could potentially exist (both nodes were present))}
+        \item{median_oa}{The median if Na´s are treated as 0}
+        \item{iqr_oa}{The iqr  if Na´s are treated as 0}
+        \item{median}{The median if the edge was present (na.rm = TRUE)}
+        \item{iqr}{The iqr if the edge was present (na.rm = TRUE)}
+        \item{median_ip}{The median value across all individuals/timepoints (Na treated as 0) where the edge could potentially exist (both nodes were present)}
+        \item{iqr_ip}{The iqr value across all individuals/timepoints (Na treated as 0) where the edge could potentially exist (both nodes were present)}
+      }}
+    \item{agg_info}{
+    \describe{
+    \item{drop_nodes}{Function input}
+    \item{drop_nodes_att}{Function input}
+    \item{nNodes}{Final number  of nodes in agg_nodes}
+    \item{nNodes_og}{Original number of nodes}
+    \item{nEdges}{Final number  of edges in agg_edges}
+    \item{nEdges_og}{Original number of edges}
+    \item{edges_sep}{Function input}
+    \item{attribute_pattern}{Function input}}
+  }}
 }
 \description{
-Title
+A function to aggregate PECAN-data (e.g over persons or timepoints). 0 values
+are treated as NA values as in most studies 0 indicates the absence of an node or edge. Edges with no corresponding
+nodes (both have to be there) are dropped and a warning is displayed.
 }
