@@ -29,9 +29,10 @@ if(is.list(nodes_color)){
 
   if(as.numeric(length(nodes_color)) >= 2 & (all(lengths(nodes_color) == 2))){
     if(is.null(nodes_community)){stop("nodes_community is not defined")}
-    if(as.numeric(nlevels(as.factor(net_nodes[,nodes_community]))) != as.numeric(length(nodes_color))){
+   # browser()
+    if(as.numeric(nlevels(as.factor(net_nodes[,"com"]))) != as.numeric(length(nodes_color))){#nodes_community
       stop("number of groups does not match elements in the nodes_color list")}
-    if(any(is.na(net_nodes[,nodes_community]))){stop("No Na´s allowed in nodes_community")}}
+    if(any(is.na(net_nodes[,"com"]))){stop("No Na´s allowed in nodes_community")}}#nodes_community
   if(all(lengths(nodes_color)) != 2){"Some objects in nodes_color dont have 2 elements"}
   }
 
