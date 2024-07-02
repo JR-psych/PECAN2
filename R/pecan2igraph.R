@@ -7,7 +7,7 @@
 #'
 #' @return
 #' @export
-#'
+#' @import igraph
 #' @examples
 pecan2igraph <- function(nodes,edges, directed = TRUE){
   # create the graph

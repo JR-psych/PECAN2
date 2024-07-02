@@ -1,21 +1,24 @@
 
 
 
+
 #' Title
 #'
-#' @param data
-#' @param edges
-#' @param nodes
-#' @param edges_sep
-#' @param labels
+#' @param data This parameter should be a dataframe where each row represents a person or timepoint (can also just be one row),
+#'  and the columns contain specific values for the nodes and edges corresponding to that person or timepoint.
 #' @param id_col
 #' @param id_number
+#' @param nodes Specifies the positions of nodes columns in the dataframe. E.g. 1:10
+#' @param edges Specifies the positions of edges columns in the dataframe. E.g. 11:100.  Each edge should be represented by a
+#' combination of node names separated by a specified separator. For example, if an edge connects nodes "pain" and "insomnia",
+#' it could be represented as "pain_insomnia" in the dataframe.
+#' @param edges_direction
+#' @param edges_sep
 #' @param nodes_labels
 #' @param label_pattern
 #' @param nodes_attributes
 #' @param attribute_pattern
 #' @param attribute_name
-#' @param edges_direction
 #' @import purrr
 #' @import dplyr
 #' @import magrittr
@@ -25,11 +28,18 @@
 #' @export
 #'
 #' @examples
-pecanExtract <- function(data, id_col = NULL, id_number = NULL,
-                         edges, nodes, labels, edges_sep,
-                         nodes_labels = NULL, label_pattern = NULL,
-                         nodes_attributes = NULL, attribute_pattern = NULL,
-                         attribute_name = "attribute", edges_direction = "from_to"){
+pecanExtract <- function(data,
+                         id_col = NULL,
+                         id_number = NULL,
+                         nodes,
+                         edges,
+                         edges_direction = "from_to",
+                         edges_sep,
+                         nodes_labels = NULL,
+                         label_pattern = NULL,
+                         nodes_attributes = NULL,
+                         attribute_pattern = NULL,
+                         attribute_name = "attribute"){
 
 
   ex_info_id_col <- id_col
@@ -40,40 +50,52 @@ pecanExtract <- function(data, id_col = NULL, id_number = NULL,
 
   data_filterd <- as.data.frame(data)
 
-  if(is.null(id_col)){data_filterd <- data[1,,drop = FALSE]}
+  if(is.null(id_col)){data_filterd <- data[1,,drop = FALSE]
+  warning("id_col is not specified. First row was taken as input")}
   else{
     if("internal_id" %in% names(data_filterd)){stop("no column should be named internal_id")}
     colnames(data_filterd)[
       which(names(data_filterd) == id_col)] <- "internal_id"
     if(is.null(id_number)){stop("id_number is null")}
 
-    data_filterd <- data_filterd[data_filterd$internal_id == id_number,]
+    data_filterd <- data_filterd[data_filterd$internal_id == id_number,,drop = FALSE]
     }
 
 
   # prepare edges df and only select edges which are not NA
 
   #browser()
-  data_edges <- data_filterd %>% dplyr::select(edges)
+  data_edges <- data_filterd[,edges,drop = FALSE]
   #browser()
-  edges_index <- purrr::map_lgl(data_edges, ~ all(!is.na(.)))
-  #browser()
-  data_edges <- data_edges[, edges_index]
- # browser()
+
+  edges_index <- vector()
+  for(i in 1:as.numeric(ncol(data_edges))){
+      edges_index <- c(edges_index,!is.na(data_edges[1,i]))
+      }
+
+  #edges_index <- purrr::map_lgl(data_edges, ~ all(!is.na(.)))
+  browser()
+  data_edges <- data_edges[, edges_index, drop = FALSE]
+  browser()
   # prepare nodes df and only select nodes which are not NA
  # browser()
-  data_nodes <- data_filterd %>% dplyr::select(nodes)
+  data_nodes <- data_filterd[,nodes,drop = FALSE]
  # browser()
-  nodes_index <- purrr::map_lgl(data_nodes, ~ all(!is.na(.)))
- # browser()
-  data_nodes <- data_nodes[, nodes_index]
+  nodes_index <- vector()
+  for(i in 1:as.numeric(ncol(data_nodes))){
+    nodes_index <- c(nodes_index,!is.na(data_nodes[1,i]))}
 
+  #nodes_index <- purrr::map_lgl(data_nodes, ~ all(!is.na(.)))
  # browser()
+  data_nodes <- data_nodes[, nodes_index, drop = FALSE]
+
+  browser()
   # needed for pivot_longer
   data_edges <- data_edges %>% dplyr::mutate_if(is.character,as.numeric)
   data_nodes <- data_nodes %>% dplyr::mutate_if(is.character,as.numeric)
  # browser()
   # create edges df in long format
+  browser()
   edges_long <- tidyr::pivot_longer(data_edges, cols = everything(), names_to = "edges", values_to = "width")
   edges_long <- edges_long %>% tidyr::separate(edges,c("from","to"),edges_sep) # sep edge names into from an to column
  # browser()
@@ -84,9 +106,16 @@ pecanExtract <- function(data, id_col = NULL, id_number = NULL,
   if(!is.null(nodes_labels)){
     if(is.null(label_pattern)){stop("label_pattern is not defined")}
 
-    data_labels <- data_filterd %>% dplyr::select(nodes_labels)
-    labels_index <- purrr::map_lgl(data_labels, ~ all(!is.na(.)))
-    data_labels <- data_labels[, labels_index]
+    data_labels <- data_filterd[,nodes_labels,drop = FALSE]
+
+    labels_index <- vector()
+    for(i in 1:as.numeric(ncol(data_labels))){
+      labels_index <- c(labels_index,!is.na(data_labels[1,i]))}
+    # labels_index <- purrr::map_lgl(data_labels, ~ all(!is.na(.)))
+
+
+
+    data_labels <- data_labels[, labels_index, drop = FALSE]
     data_labels <- setNames(data_labels, gsub(label_pattern, "", colnames(data_labels)))
 
     data_labels <- data_labels %>% dplyr::mutate_if(is.character,as.numeric)
@@ -105,19 +134,23 @@ pecanExtract <- function(data, id_col = NULL, id_number = NULL,
   if(!is.null(nodes_attributes)){
     if(is.null(attribute_pattern)){stop("attribute_pattern is not defined")}
 
-    data_att <- data_filterd %>% dplyr::select(nodes_attributes)
-    att_index <- purrr::map_lgl(data_att, ~ all(!is.na(.)))
-    data_att <- data_att[, att_index]
+    data_att <- data_filterd[,nodes_attributes, drop = FALSE]
+
+    att_index <- vector()
+    for(i in 1:as.numeric(ncol(data_att))){
+      att_index <- c(att_index,!is.na(data_att[1,i]))}
+    # att_index <- purrr::map_lgl(data_att, ~ all(!is.na(.)))
+    data_att <- data_att[, att_index,drop = FALSE]
     data_att <- setNames(data_att, gsub(attribute_pattern, "", colnames(data_att)))
 
     data_att <- data_att %>% dplyr::mutate_if(is.character,as.numeric)
 
     att_long <- pivot_longer(data_att, cols = everything(), names_to = "id", values_to = attribute_name)
 
-    if(!all(labels_long$id %in% nodes_long$id)){
-      warning("Some labels have no corresponding node and were filterd out")}
+    if(!all(att_long$id %in% nodes_long$id)){
+      warning("Some attributes have no corresponding node and were filterd out")}
 
-    nodes_long <- merge(nodes_long, labels_long, by = "id", all.x = TRUE, all.y = FALSE)
+    nodes_long <- merge(nodes_long, att_long, by = "id", all.x = TRUE, all.y = FALSE)
 
   }
 

@@ -95,6 +95,6 @@ A list with the following components:
 }
 \description{
 A function to aggregate PECAN-data (e.g over persons or timepoints). 0 values
-are treated as NA values as in most studies 0 indicates the absence of an node or edge. Edges with no corresponding
+are treated as NA values as in most studies 0 indicates the absence of a node or edge. Edges with no corresponding
 nodes (both have to be there) are dropped and a warning is displayed.
 }

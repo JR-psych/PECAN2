@@ -148,36 +148,36 @@
 #' @import visNetwork
 #' @import dplyr
 #'
-pecanVis <- function(nodes,edges,
+pecanPrepare <- function(nodes,edges,
 
-                      nodes_size = 28, #done
-                      nodes_size_max = NULL, # done?
-                      nodes_color_by = NULL,  # done?
-                      nodes_color = "red", #color, color column name or list # done
-                      nodes_color_max = NULL, # Done
-                      nodes_color_scaling = "scaled",
-                      nodes_community = NULL, #  or column name
+                     nodes_size = 28, #done
+                     nodes_size_max = NULL, # done?
+                     nodes_color_by = NULL,  # done?
+                     nodes_color = "red", #color, color column name or list # done
+                     nodes_color_max = NULL, # Done
+                     nodes_color_scaling = "scaled",
+                     nodes_community = NULL, #  or column name
 
-                      nodes_hide_isolated = FALSE, # done
+                     nodes_hide_isolated = FALSE, # done
 
-                      nodes_label = NULL, # done
+                     nodes_label = NULL, # done
 
-                      edges_color = "black",   # spezial Fall
-                      neg_edges_color = "mediumblue", # spezial Fall
-                      edges_color_scaling = "scaled", # spezial Fall
-                      edges_color_by = NULL, # das musst du noch erstellen!
-                      edges_color_max = NULL,
+                     edges_color = "black",   # spezial Fall
+                     neg_edges_color = "mediumblue", # spezial Fall
+                     edges_color_scaling = "scaled", # spezial Fall
+                     edges_color_by = NULL, # das musst du noch erstellen!
+                     edges_color_max = NULL,
 
-                      edges_regulation = NULL, # done # has to be NULL or a list
-                      edges_width = 5, #  column name
-                      edges_width_max = NULL, # done?
-                      edges_arrows = "to",
-                      edges_smooth = TRUE,
+                     edges_regulation = NULL, # done # has to be NULL or a list
+                     edges_width = 5, #  column name
+                     edges_width_max = NULL, # done?
+                     edges_arrows = "to",
+                     edges_smooth = TRUE,
 
 
-                      use_seed = "random", c_width = 1200, c_height = 750,
-                      edit = TRUE, export = TRUE, p_id = NULL
-){
+                     use_seed = "random", c_width = 1200, c_height = 750,
+                     edit = TRUE, export = TRUE, p_id = NULL
+                     ){
 
   options(warn = 2)
 
@@ -209,16 +209,16 @@ pecanVis <- function(nodes,edges,
 
   # If edge color is not inherit and edge_color_by is defined we get this column
 
-  if(!is.null(edges_color_by)){if(edges_color_by %in% names(edges)){net_edges$color <- edges[,edges_color_by,drop = TRUE]}
-    else{stop("color_by column not in edges")}}
+    if(!is.null(edges_color_by)){if(edges_color_by %in% names(edges)){net_edges$color <- edges[,edges_color_by,drop = TRUE]}
+      else{stop("color_by column not in edges")}}
 
-  if(is.null(edges_color_by)){
-    if(is_valid_color(edges_color)){net_edges$color.color <- edges_color
-    }
-    else{if(edges_color %in% names(edges)){net_edges$color.color <- edges[,edges_color,drop = TRUE]
-    if(!is_valid_color(net_edges$color.color)){
-      stop("color columns consists of non valid colors")}}
-      else{stop("edges_color is either not a valid color or not in edges names")}}}
+    if(is.null(edges_color_by)){
+      if(is_valid_color(edges_color)){net_edges$color.color <- edges_color
+      }
+      else{if(edges_color %in% names(edges)){net_edges$color.color <- edges[,edges_color,drop = TRUE]
+      if(!is_valid_color(net_edges$color.color)){
+        stop("color columns consists of non valid colors")}}
+        else{stop("edges_color is either not a valid color or not in edges names")}}}
 
 
   if(edges_arrows == "none"){net_edges$arrows <- FALSE}
@@ -319,7 +319,7 @@ pecanVis <- function(nodes,edges,
                                 neg_edges_color = neg_edges_color, edges_color_scaling = edges_color_scaling)}
 
 
-  net_edges$smooth <- edges_smooth
+   net_edges$smooth <- edges_smooth
 
 
   #setting seed
@@ -350,35 +350,54 @@ pecanVis <- function(nodes,edges,
   }
 
 
+recommendations = list(visNodes = "chosen = FALSE",
+                       visOptions = "highlightNearest = TRUE, manipulation = list(enabled = TRUE, editEdgeCols = c('arrows','color.color','width','label'),
+                                             editNodeCols = c('id','label','color.background','color.border','size','boderWidth'))",
+                       visInteraction = "selectable = TRUE",
+                       visEdges = "selfReference = list(size = 20, angle = pi/4, renderBehindTheNode = TRUE),
+                                    chosen = FALSE",
+                       visLayout = "improvedLayout = TRUE",
+                       visPhysics = "solver = 'barnesHut',barnesHut = list(nodeDistance = 400, avoidOverlap = 1, springConstant=0.001)")
+
+
+
+nw_data <- list(nodes = net_nodes,
+                edges = net_edges,
+                recommendations = recommendations)
+
+
+
+
+nw_data
+}
   #  net_edges <- net_edges %>% dplyr::mutate(width = ifelse(width <= 4, width*1.25,ifelse(width <=6,width*1.5,width*2)))
   #list(enabled = TRUE, editEdgeCols = c("arrows","color","width","label"),
   #     editNodeCols = c("id","label","color","size"))
   ### eingabe für visNetwork
-  if(export){nw <- visNetwork::visNetwork(nodes = net_nodes, edges = net_edges, width = c_width, height = c_height) %>%
-    visNodes(chosen = FALSE) %>%
-    visOptions(highlightNearest = TRUE,manipulation = manipulation_list) %>%
-    visInteraction(selectable= TRUE) %>%
-    visEdges(selfReference = list(size = 20, angle = pi/4, renderBehindTheNode = TRUE),    #arrows = arrows,
-             chosen = FALSE) %>%
+#  if(export){nw <- visNetwork::visNetwork(nodes = net_nodes, edges = net_edges, width = c_width, height = c_height) %>%
+#    visNodes(chosen = FALSE) %>%
+#    visOptions(highlightNearest = TRUE,manipulation = manipulation_list) %>%
+#    visInteraction(selectable= TRUE) %>%
+#    visEdges(selfReference = list(size = 20, angle = pi/4, renderBehindTheNode = TRUE),    #arrows = arrows,
+#             chosen = FALSE) %>%
+#    visEdges(color = list(color = edges$color, opacity = 0.1)) %>%
+#    visLayout(improvedLayout = TRUE, randomSeed = s1) %>%
+#    visPhysics(solver = "barnesHut", barnesHut = list(nodeDistance = 400, avoidOverlap = 1, springConstant=0.001)) %>%
+#    visExport(type = "png", name = s1n,
+#              float = "left", label = "Save network")}
+
+
+
+#  if(!export){nw <- visNetwork::visNetwork(nodes = net_nodes, edges = net_edges, width = c_width, height = c_height) %>%
+#    visNodes(chosen = FALSE) %>%
+#    visOptions(highlightNearest = TRUE,manipulation = manipulation_list) %>%
+#    visInteraction(selectable= TRUE) %>%
+#    visEdges(selfReference = list(size = 20, angle = pi/4, renderBehindTheNode = TRUE),    #arrows = arrows,
+#             chosen = FALSE) %>%
     #visEdges(color = list(color = edges$color, opacity = 0.1)) %>%
-    visLayout(improvedLayout = TRUE, randomSeed = s1)%>%
-    visPhysics(solver = "barnesHut", barnesHut = list(nodeDistance = 400, avoidOverlap = 1, springConstant=0.001)) %>%
-
-    visExport(type = "png", name = s1n,
-              float = "left", label = "Save network")}
+#    visLayout(improvedLayout = TRUE, randomSeed = s1)%>%
+#    visPhysics(solver = "barnesHut", barnesHut = list(nodeDistance = 400, avoidOverlap = 1, springConstant=0.001))}
 
 
 
-  if(!export){nw <- visNetwork::visNetwork(nodes = net_nodes, edges = net_edges, width = c_width, height = c_height) %>%
-    visNodes(chosen = FALSE) %>%
-    visOptions(highlightNearest = TRUE,manipulation = manipulation_list) %>%
-    visInteraction(selectable= TRUE) %>%
-    visEdges(selfReference = list(size = 20, angle = pi/4, renderBehindTheNode = TRUE),    #arrows = arrows,
-             chosen = FALSE) %>%
-    #visEdges(color = list(color = edges$color, opacity = 0.1)) %>%
-    visLayout(improvedLayout = TRUE, randomSeed = s1)%>%
-    visPhysics(solver = "barnesHut", barnesHut = list(nodeDistance = 400, avoidOverlap = 1, springConstant=0.001))}
-
-
-
-  nw}
+#  nw}
