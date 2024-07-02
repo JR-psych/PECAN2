@@ -16,14 +16,6 @@ pecanVis(
   nodes_community = NULL,
   nodes_hide_isolated = FALSE,
   nodes_label = NULL,
-  nodes_border_color = NULL,
-  nodes_border_color_by = NULL,
-  nodes_border_color_max = NULL,
-  nodes_border_color_scaling = "scaled",
-  nodes_border_width = NULL,
-  nodes_border_color_use_com = TRUE,
-  nodes_font = NULL,
-  nodes_hidden = NULL,
   edges_color = "black",
   neg_edges_color = "mediumblue",
   edges_color_scaling = "scaled",
@@ -33,17 +25,7 @@ pecanVis(
   edges_width = 5,
   edges_width_max = NULL,
   edges_arrows = "to",
-  edges_dashes = NULL,
-  edges_hidden = NULL,
-  edges_label = NULL,
-  edges_font = NULL,
-  edges_arrowsScaleFactor = 1,
-  edges_color.inherit = FALSE,
-  edges_selfReference = NULL,
   edges_smooth = TRUE,
-  edges_widthConstraint = FALSE,
-  edges_arrowStrikethrough = FALSE,
-  edges_endPointOffset = NULL,
   use_seed = "random",
   c_width = 1200,
   c_height = 750,
@@ -115,53 +97,6 @@ should be hidden in the network. This parameter is a logical value. When set to 
 allows users to define labels for nodes based on a specified column in the dataset.
 By default, this parameter is set to NULL}
 
-\item{nodes_border_color}{Specifies the colors of the nodes borders.
-If nodes_border_color_by is defined, it must be a list containing the desired color spectrum.
- For example: list("red", "darkred"). If communities are defined (see nodes_community),
- the list needs to contain one vector for each community, with two colors specified for
- each community. For example: list(c("red", "darkred"), c("lightblue", "blue")).
- If nodes_border_color_by is not defined, it can take one of the following forms:
- The column name containing the colors or a single color specified as a string.
- For example: "red" (default)}
-
-\item{nodes_border_color_by}{Specifies whether node borders should be colored based on
-values of a specific column. If this parameter is set, it should be the name of the column
- in the dataset to base the node border colors on. By default, this parameter is set to NULL}
-
-\item{nodes_border_color_max}{A number which specifies the maximum possible value of the
-“nodes_border_color_by” column if it is detected or specified. This parameter is useful,
- for example, if border color is based on severity (ranging from 1 to 100),
- but no participant reported the maximum value of 100. If nodes_border_color_max is set to
- 100, then the rescaling will be based on that value rather than the maximum input.
- If this parameter is not defined, it will be set to the maximum of the input values.}
-
-\item{nodes_border_color_scaling}{Specifies how the distance between the coloring of the
-values should be defined. It can take one of two values: "fixed": The distance between the
- colors is evenly spread from 0 to the maximum value. "scaled": The distance between the
- colors is scaled from the minimum to the maximum value, enabling clearer coloring
- separation within the network. By default, this parameter is set to "scaled".}
-
-\item{nodes_border_width}{Specifies the width of the nodes' borders. This parameter can
-either be a numeric value indicating the width of the borders or the name of a column
-in the dataset containing the values for the border widths. By default, this parameter
-is set to NULL.}
-
-\item{nodes_border_color_use_com}{Specifies whether communities should be used to color
-the nodes' borders. This parameter is a logical value. When set to TRUE, the communities
- defined for nodes will be used to color their borders. By default, this parameter is set
- to TRUE.}
-
-\item{nodes_font}{This parameter must be either NULL or a list containing node font
-properties. By default, this parameter is set to NULL. If this parameter is NULL and
-labels are used the following settings are used: list(align = 'left', size = 30,
-bold = TRUE, strokeWidth = 0.3, strokeColor = "black", background = "white")
-(see https://visjs.github.io/vis-network/docs/network/nodes.html)}
-
-\item{nodes_hidden}{Specifies whether specific nodes should be hidden. If this parameter
-is set, it should be the name of a column in the dataset containing logical values
- (TRUE/FALSE) indicating whether each node should be hidden or not. By default, this
- parameter is set to NULL}
-
 \item{edges_color}{Specifies the colors of the (positive) edges. If edges_color_by is
 defined, it must be a vector containing the desired color spectrum.
 For example: c("lightgrey", "black"). If edges_color_by is not defined, it can take one
@@ -224,47 +159,8 @@ dataframe must contain a column named "arrows" which provides the arrow informat
 each edge. Can also be a combination of “from”, “to” and “middle” By default, the arrows
 are set to "to".}
 
-\item{edges_dashes}{Specifies whether the edges should be rendered as dashed lines.
-This parameter allows users to specify a column containing logical arguments indicating
- which edges should be rendered as dashed lines. By default, this parameter is set to NULL}
-
-\item{edges_hidden}{Specifies whether some edges should be hidden. This parameter allows
-users to specify a column containing logical arguments indicating which edges should be
-hidden. By default, this parameter is set to NULL.}
-
-\item{edges_label}{Specifies the column defining the label of an edge. This parameter allows
-users to specify the name of a column containing the labels for edges. By default,
-this parameter is set to NULL.}
-
-\item{edges_font}{This parameter must be either NULL or a list containing font properties.
-If not specified and edges_label is specified, the font is placed in the middle of the
-edges (see https://visjs.github.io/vis-network/docs/network/edges.html)}
-
-\item{edges_arrowsScaleFactor}{Number specifying the scale factor of the edges.
-By default, this parameter is set to 1.
-(See https://visjs.github.io/vis-network/docs/network/edges.html)}
-
-\item{edges_color.inherit}{Specifies whether edges should be colored based on their nodes.
-This parameter is a logical value. When set to TRUE, edges are colored based on their
- connecting nodes. By default, this parameter is set to FALSE
- (see https://visjs.github.io/vis-network/docs/network/edges.html).}
-
-\item{edges_selfReference}{This parameter must be either NULL or a list containing
-self-reference properties. (See https://visjs.github.io/vis-network/docs/network/edges.html)}
-
 \item{edges_smooth}{This parameter must be either NULL or a list containing curve properties
 of edges (See https://visjs.github.io/vis-network/docs/network/edges.html)}
-
-\item{edges_widthConstraint}{If set to number it specifies whether the width of
-edge labels should be constrained. By default, this parameter is set to
-FALSE (See https://visjs.github.io/vis-network/docs/network/edges.html)}
-
-\item{edges_arrowStrikethrough}{Logical parameter specifying whether edges should stop
-at the arrow? By default, this parameter is set to FALSE.
-(see https://visjs.github.io/vis-network/docs/network/edges.html)}
-
-\item{edges_endPointOffset}{This parameter must be either NULL or a list containing
-edges endpoint properties (see https://visjs.github.io/vis-network/docs/network/edges.html)}
 
 \item{use_seed}{Specifies the method for placing nodes. This parameter can be set to:
 "random": Nodes are placed randomly. A numeric value: Specifies the seed for random
