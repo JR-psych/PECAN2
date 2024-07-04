@@ -257,17 +257,16 @@ pecanPrepare <- function(nodes,edges,
 
 
   if(!is.null(nodes_color_by)){
-
     if(nodes_color_by %in% names(nodes)){net_nodes$color <- abs(nodes[,nodes_color_by,drop = TRUE])}
-    else{stop("color_by column not in nodes")}}#}
+    else{stop("color_by column not in nodes")}}
 
   if(is.null(nodes_color_by)){
-    if(is_valid_color(nodes_color)){net_nodes$color.background <- nodes_color
-    }    #nodes_color_is_set <- TRUE
-    else{if(nodes_color %in% names(nodes)){net_nodes$color.background <- nodes[,nodes_color,drop = TRUE]
-    if(!is_valid_color(net_nodes$color.background)){
-      stop("nodes color columns consists of non valid colors")}}
-      else{stop("nodes_color is either not a valid color or not in nodes names")}}}
+    if(is.list(nodes_color)){stop("nodes_color can not be a list if nodes_color_by is not defined")}
+    if(is_valid_color(nodes_color)){net_nodes$color.background <- nodes_color}
+    else{if(nodes_color %in% names(nodes)){net_nodes$color.background <- nodes[,nodes_color,drop = TRUE]}}
+    if(!("color.background" %in% names(net_nodes))){stop("nodes_color is either not a valid color or not in nodes names")}
+    if(!is_valid_color(net_nodes$color.background)){stop("nodes_color column consists of non valid colors")}
+      }
 
   if(!is.null(nodes_community)){
     if(nodes_community %in% names(nodes)){net_nodes$com <- nodes[,nodes_community,drop = TRUE]}
