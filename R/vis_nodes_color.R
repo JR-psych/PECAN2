@@ -12,12 +12,12 @@
 #' @examples
 vis_nodes_color <- function(net_nodes, nodes_color, nodes_color_max, nodes_color_scaling){
 
-#browser()
+
 #######################################################
 if("com" %in% names(net_nodes)){
-  if(is.null(nodes_color_max)){nodes_color_max <- max(net_nodes$color)}
+
   net_nodes$st_id <- 1:nrow(net_nodes)
-  net_nodes <- vis_nodes_color_max(net_nodes = net_nodes,nodes_color_max = nodes_color_max)
+
   nodes_combined <- data.frame()
   unique_groups <- sort(unique(net_nodes$com))
 
@@ -25,24 +25,29 @@ if("com" %in% names(net_nodes)){
     i_nodes <- net_nodes %>% filter(com == i)
     j <- as.numeric(which(unique_groups == i))
 
+    if(is.null(nodes_color_max)){nodes_color_max_i <- max(i_nodes$color)}
+    else{nodes_color_max_i <- nodes_color_max}
+    i_nodes <- vis_nodes_color_max(net_nodes = i_nodes,nodes_color_max = nodes_color_max_i)
+
+
     if(nodes_color_scaling == "fixed"){
       rgb_i <- colorRamp(c(nodes_color[[j]][1],nodes_color[[j]][2]))(i_nodes$color/10)
 
       i_colors <- rgb(rgb_i[, 1], rgb_i[, 2], rgb_i[, 3], maxColorValue = 255)}
     if(nodes_color_scaling == "scaled"){
-      if(min(i_nodes$color) == max(i_nodes$color)){
-        rgb_i <- colorRamp(c(nodes_color[[j]][1],nodes_color[[j]][2]))(i_nodes$color/10)} # Avoid dividing by 0 if min=max
+      if(min(i_nodes$color) == 10){
+        rgb_i <- colorRamp(c(nodes_color[[j]][1],nodes_color[[j]][2]))((i_nodes$color/10))} # Avoid dividing by 0 if min=max
       else{
         rgb_i <- colorRamp(c(nodes_color[[j]][1],nodes_color[[j]][2]))(
-          (i_nodes$color - min(i_nodes$color))/(max(i_nodes$color) - min(i_nodes$color)))
+          (i_nodes$color - min(i_nodes$color))/(10 - min(i_nodes$color)))
       } # browser()
       i_colors <- rgb(rgb_i[, 1], rgb_i[, 2], rgb_i[, 3], maxColorValue = 255)}
     #cate if range is 0
-    #       browser()
+
     i_nodes$color.background <- i_colors
-    #       browser()
+
     nodes_combined <- rbind(nodes_combined, i_nodes)
-    #browser()
+
     nodes_combined}
 
   net_nodes <- nodes_combined[order(nodes_combined$st_id),]
@@ -62,10 +67,10 @@ if(!("com" %in% names(net_nodes))){
     net_nodes}
   #browser()
   if(nodes_color_scaling == "scaled"){
-    if(min(net_nodes$color) == max(net_nodes$color)){
+    if(min(net_nodes$color) == 10){
       rgb_i <- colorRamp(c(nodes_color[[1]],nodes_color[[2]]))((net_nodes$color)/10)} #avoid dividing by 0
     else{rgb_i <- colorRamp(c(nodes_color[[1]],nodes_color[[2]]))(
-      (net_nodes$color - min(net_nodes$color))/(max(net_nodes$color) - min(net_nodes$color)))
+      (net_nodes$color - min(net_nodes$color))/(10 - min(net_nodes$color)))
     }
     i_colors <- rgb(rgb_i[, 1], rgb_i[, 2], rgb_i[, 3], maxColorValue = 255)
     #  browser()
@@ -74,7 +79,7 @@ if(!("com" %in% names(net_nodes))){
   drop_cols <- "color"
   net_nodes <- net_nodes[,!names(net_nodes) %in% drop_cols]
   net_nodes}
-
+  net_nodes
 }
 
 
