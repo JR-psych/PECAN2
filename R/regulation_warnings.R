@@ -22,7 +22,7 @@ regulation_warnings <- function(edges_regulation,edges){
 
   if(("reg_value" %in% names(edges_regulation)) == FALSE){stop("reg_value is missing in regulation")}
 
-  if(is.numeric(edges_regulation$reg_value) == FALSE){stop("reg_value is missing in regulation")}
+  if(is.numeric(edges_regulation$reg_value) == FALSE){stop("reg_value must be numeric")}
 
   if(is.numeric(as.vector(edges[,edges_regulation$reg_by, drop = TRUE])) == FALSE){stop("reg_by must be numeric")}
 
