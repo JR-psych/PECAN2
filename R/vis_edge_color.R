@@ -14,36 +14,42 @@
 vis_edge_color <- function(net_edges, edges_color, neg_edges_color, edges_color_scaling){
 
 #browser()
-if(any(net_edges$neg_color == 1)){
+if(any(net_edges$neg_color == 1) & !is.null(neg_edges_color)){
       net_edges$st_id <- 1:nrow(net_edges)
 
-      pos_edges <- net_edges[net_edges$neg_color == 0, ]
-      neg_edges <- net_edges[net_edges$neg_color == 1, ]
+      pos_edges <- net_edges[net_edges$neg_color == 0,,drop = FALSE]
+      neg_edges <- net_edges[net_edges$neg_color == 1,,drop = FALSE]
 
-      if(length(edges_color) == 2){
+    #  if(length(edges_color) == 2){
                        if(edges_color_scaling == "fixed"){
                           rgb_pos <- colorRamp(c(edges_color[1],edges_color[2]))((pos_edges$color)/10)
                           #browser()
                           pos_colors <- rgb(rgb_pos[, 1], rgb_pos[, 2], rgb_pos[, 3], maxColorValue = 255)}
                       if(edges_color_scaling == "scaled"){
+                        if(min(net_edges$color) == 10){
+                          rgb_pos <- colorRamp(c(edges_color[1],edges_color[2]))((pos_edges$color)/10)} #Avoid dividing by 0
+                        else {
                           rgb_pos <- colorRamp(c(edges_color[1],edges_color[2]))(
-                                    (pos_edges$color - min(net_edges$color))/(max(net_edges$color) - min(net_edges$color)))
-                          pos_colors <- rgb(rgb_pos[, 1], rgb_pos[, 2], rgb_pos[, 3], maxColorValue = 255) }}
+                                    (pos_edges$color - min(net_edges$color))/(10 - min(net_edges$color)))}     #max(net_edges$color) old but wrong
+                          pos_colors <- rgb(rgb_pos[, 1], rgb_pos[, 2], rgb_pos[, 3], maxColorValue = 255)}#}
 
-      if(length(edges_color) == 1){pos_colors <- edges_color}
+#      if(length(edges_color) == 1){pos_colors <- edges_color}
 
-      if(length(neg_edges_color) == 2){
+      #if(length(neg_edges_color) == 2){
       if(edges_color_scaling == "fixed"){
          rgb_neg <- colorRamp(c(neg_edges_color[1],neg_edges_color[2]))((neg_edges$color)/10)
          neg_colors <- rgb(rgb_neg[, 1], rgb_neg[, 2], rgb_neg[, 3], maxColorValue = 255)}
       if(edges_color_scaling == "scaled"){
+        if(min(net_edges$color) == 10){
+          rgb_neg <- colorRamp(c(edges_color[1],edges_color[2]))((neg_edges$color)/10)} #Avoid dividing by 0
+        else {
          rgb_neg <- colorRamp(c(neg_edges_color[1],neg_edges_color[2]))(
-                          (neg_edges$color - min(net_edges$color))/(max(net_edges$color) - min(net_edges$color)))
-         neg_colors <- rgb(rgb_neg[, 1], rgb_neg[, 2], rgb_neg[, 3], maxColorValue = 255)}}
+                          (neg_edges$color - min(net_edges$color))/(10 - min(net_edges$color)))}
+         neg_colors <- rgb(rgb_neg[, 1], rgb_neg[, 2], rgb_neg[, 3], maxColorValue = 255)}#}
 
 
 
-      if(length(neg_edges_color) == 1){neg_colors <- neg_edges_color}
+      #if(length(neg_edges_color) == 1){neg_colors <- neg_edges_color}
 
   pos_edges$color.color <- pos_colors
   neg_edges$color.color <- neg_colors
@@ -58,7 +64,7 @@ if(any(net_edges$neg_color == 1)){
   net_edges}
 
 else{
-      if(length(edges_color) == 2){#browser()
+     # if(length(edges_color) == 2){#browser()
             if(edges_color_scaling == "fixed"){
                #browser()
                rgb_pos <- colorRamp(c(edges_color[1],edges_color[2]))((net_edges$color)/10)
@@ -66,14 +72,14 @@ else{
               # browser()
                pos_colors <- rgb(rgb_pos[, 1], rgb_pos[, 2], rgb_pos[, 3], maxColorValue = 255)}
             if(edges_color_scaling == "scaled"){
-             # browser()
-              if(min(net_edges$color) == max(net_edges$color)){
+
+              if(min(net_edges$color) == 10){
                  rgb_pos <- colorRamp(c(edges_color[1],edges_color[2]))((net_edges$color)/10)} #Avoid dividing by 0
                else {rgb_pos <- colorRamp(c(edges_color[1],edges_color[2]))(
-               (net_edges$color - min(net_edges$color))/(max(net_edges$color) - min(net_edges$color)))}
-                pos_colors <- rgb(rgb_pos[, 1], rgb_pos[, 2], rgb_pos[, 3], maxColorValue = 255)}}
+               (net_edges$color - min(net_edges$color))/(10 - min(net_edges$color)))}
+                pos_colors <- rgb(rgb_pos[, 1], rgb_pos[, 2], rgb_pos[, 3], maxColorValue = 255)}#}
   #browser()
-      if(length(edges_color) == 1){pos_colors <- edges_color}
+      #if(length(edges_color) == 1){pos_colors <- edges_color}
   net_edges$color.color <- pos_colors
   #browser()
   net_edges}
