@@ -25,13 +25,7 @@ pecanPrepare(
   edges_width = 5,
   edges_width_max = NULL,
   edges_arrows = "to",
-  edges_smooth = TRUE,
-  use_seed = "random",
-  c_width = 1200,
-  c_height = 750,
-  edit = TRUE,
-  export = TRUE,
-  p_id = NULL
+  edges_smooth = TRUE
 )
 }
 \arguments{
