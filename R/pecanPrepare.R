@@ -172,12 +172,7 @@ pecanPrepare <- function(nodes,edges,
                      edges_width = 5, #  column name
                      edges_width_max = NULL, # done?
                      edges_arrows = "to",
-                     edges_smooth = TRUE,
-
-
-                     use_seed = "random", c_width = 1200, c_height = 750,
-                     edit = TRUE, export = TRUE, p_id = NULL
-                     ){
+                     edges_smooth = TRUE){
 
   options(warn = 2)
 
@@ -290,11 +285,6 @@ pecanPrepare <- function(nodes,edges,
   }
 
 
-  if(edit == TRUE){manipulation_list <- list(enabled = TRUE, editEdgeCols = c("arrows","color.color","width","label"),
-                                             editNodeCols = c("id","label","color.background","color.border","size","boderWidth"))}
-
-  if(edit == FALSE){manipulation_list <- list(enabled = FALSE)}
-
 
   nodes_general_warnings(net_nodes = net_nodes)
   if(nrow(net_edges) > 0){edges_general_warnings(net_edges = net_edges)}
@@ -334,21 +324,6 @@ pecanPrepare <- function(nodes,edges,
   if(nrow(net_edges) > 0){net_edges$smooth <- edges_smooth}
 
 
-
-  #setting seed
-  if(use_seed != "random"){if(is.numeric(use_seed)){s1 <- use_seed}
-    else{stop("use_seed must be numeric")}}
-  if(use_seed == "random"){s1 <- floor(runif(1,-1000000,1000000))}
-
-  # name variable
-
-  if(!is.null(p_id)){s1n <- paste((paste("network_id",p_id,"seed(", sep = "_")),s1,")", sep= "")}
-  else{s1n <- paste((paste("network","seed(", sep = "_")),s1,")", sep= "")}
-
-  #pecan_edges <<- net_edges %>% dplyr::mutate(used_seed = s1,
-  #                               used_width = ifelse(width <= 4, width*1.25,ifelse(width <=6,width*1.5,width*2)))
-
-  #pecan_nodes <<- net_nodes %>% dplyr::mutate(used_seed = s1)
   if(nodes_hide_isolated == TRUE){#browser()
     net_nodes$hidden <- as.logical(!(net_nodes$id %in% c(net_edges$from, net_edges$to)))
     #browser()
