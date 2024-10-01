@@ -163,7 +163,7 @@ pecanVis <- function(nodes,edges,
                       nodes_label = NULL, # done
 
                       edges_color = "black",   # spezial Fall
-                      neg_edges_color = "mediumblue", # spezial Fall
+                      neg_edges_color = NULL, # spezial Fall
                       edges_color_scaling = "scaled", # spezial Fall
                       edges_color_by = NULL, # das musst du noch erstellen!
                       edges_color_max = NULL,
@@ -179,150 +179,70 @@ pecanVis <- function(nodes,edges,
                       edit = TRUE, export = TRUE, p_id = NULL
 ){
 
-  options(warn = 2)
-
-  size_set_auto <- FALSE
-  width_set_auto <- FALSE
-
-  net_edges <- edges[,c("from","to"), drop = FALSE]
-  net_edges <- as.data.frame(net_edges)
-
-  #browser()
-  # If width is numeric every edge gets the number
-  if(is.numeric(edges_width)){net_edges$width <- edges$width
-  width_set_auto <- TRUE}
 
 
-  if(!is.numeric(edges_width)){
-    if(edges_width %in% names(edges)){net_edges$width <- abs(edges[,edges_width,drop = TRUE])
-    }
-    else{warning(stop("edges_width column not in edges"))}
-  }
+  nodes <- nodes
+  edges <- edges
+  nodes_size <- nodes_size
+  nodes_size_max  <- nodes_size_max
+  nodes_color_by  <- nodes_color_by
+  nodes_color <-  nodes_color
+  nodes_color_max <- nodes_color_max
+  nodes_color_scaling <- nodes_color_scaling
+  nodes_community <- nodes_community
+  nodes_hide_isolated <- nodes_hide_isolated
+  nodes_label <- nodes_label
 
+  edges_color <- edges_color
+  neg_edges_color <- neg_edges_color
+  edges_color_scaling <- edges_color_scaling
+  edges_color_by <- edges_color_by
+  edges_color_max <- edges_color_max
 
-  if(!is.null(edges_regulation)){
-    regulation_warnings(edges_regulation = edges_regulation,edges = edges)
-    reg_by <- edges_regulation$reg_by
-    net_edges$internal_reg <- abs(edges[,reg_by,drop = TRUE])
-  }
+  edges_regulation <- edges_regulation
+  edges_width <- edges_width
+  edges_width_max <- edges_width_max
+  edges_arrows <- edges_arrows
+  edges_smooth <- edges_smooth
 
+  p_vis_list <- pecanPrepare(nodes = nodes,
+                             edges = edges,
+                             nodes_size = nodes_size,
+                             nodes_size_max = nodes_size_max,
+                             nodes_color_by = nodes_color_by,
+                             nodes_color =  nodes_color,
+                             nodes_color_max = nodes_color_max,
+                             nodes_color_scaling = nodes_color_scaling,
+                             nodes_community = nodes_community,
 
-  # If edge color is not inherit and edge_color_by is defined we get this column
+                             nodes_hide_isolated =  nodes_hide_isolated,
 
-  if(!is.null(edges_color_by)){if(edges_color_by %in% names(edges)){net_edges$color <- edges[,edges_color_by,drop = TRUE]}
-    else{stop("color_by column not in edges")}}
+                             nodes_label = nodes_label,
 
-  if(is.null(edges_color_by)){
-    if(is_valid_color(edges_color)){net_edges$color.color <- edges_color
-    }
-    else{if(edges_color %in% names(edges)){net_edges$color.color <- edges[,edges_color,drop = TRUE]
-    if(!is_valid_color(net_edges$color.color)){
-      stop("color columns consists of non valid colors")}}
-      else{stop("edges_color is either not a valid color or not in edges names")}}}
+                             edges_color = edges_color,
+                             neg_edges_color = neg_edges_color,
+                             edges_color_scaling = edges_color_scaling,
+                             edges_color_by = edges_color_by,
+                             edges_color_max = edges_color_max,
 
-
-  if(edges_arrows == "none"){net_edges$arrows <- FALSE}
-
-  if(edges_arrows != "none"){
-    arrows_from <- grepl("from", edges_arrows)
-    arrows_to <- grepl("to", edges_arrows)
-    arrows_middle <- grepl("middle", edges_arrows)
-
-    if(any(arrows_from,arrows_to,arrows_middle)){
-      # Create a character containing the present patterns separated by "_"
-      present_patterns <- character()
-      if (arrows_from){present_patterns <- c(present_patterns, "from")}
-      if (arrows_to){present_patterns <- c(present_patterns, "to")}
-      if (arrows_middle){present_patterns <- c(present_patterns, "middle")}
-
-      arrow_result <- paste(present_patterns, collapse = "_")
-      net_edges$arrows <- arrow_result
-    }}
-
-
-  if(!is.logical(edges_smooth)){stop("edges_smooth must be logical or list")}
-
-
-  net_nodes <- nodes[,c("id"), drop = FALSE]
-  net_nodes <- as.data.frame(net_nodes)
-
-  if(is.numeric(nodes_size)){net_nodes$size <- nodes_size
-  size_set_auto <- TRUE}
-
-  if(!is.numeric(nodes_size)){
-    if(nodes_size %in% names(nodes)){net_nodes$size <- abs(nodes[,nodes_size,drop = TRUE])}
-    else{warning(stop("nodes_size column not in nodes"))}
-  }
+                             edges_regulation = edges_regulation,
+                             edges_width = edges_width,
+                             edges_width_max = edges_width_max,
+                             edges_arrows = edges_arrows,
+                             edges_smooth = edges_smooth)
 
 
 
-  if(!is.null(nodes_color_by)){
-
-    if(nodes_color_by %in% names(nodes)){net_nodes$color <- abs(nodes[,nodes_color_by,drop = TRUE])}
-    else{stop("color_by column not in nodes")}}#}
-
-  if(is.null(nodes_color_by)){
-    if(is_valid_color(nodes_color)){net_nodes$color.background <- nodes_color
-    }    #nodes_color_is_set <- TRUE
-    else{if(nodes_color %in% names(nodes)){net_nodes$color.background <- nodes[,nodes_color,drop = TRUE]
-    if(!is_valid_color(net_nodes$color.background)){
-      stop("nodes color columns consists of non valid colors")}}
-      else{stop("nodes_color is either not a valid color or not in nodes names")}}}
-
-  if(!is.null(nodes_community)){
-    if(nodes_community %in% names(nodes)){net_nodes$com <- nodes[,nodes_community,drop = TRUE]}
-    else{stop("community column not in nodes")}}
-
-  if(!is.null(nodes_label)){
-    if(nodes_label %in% names(nodes)){net_nodes$label <- nodes[,nodes_label,drop = TRUE]}
-    else{stop("nodes_label not in nodes")}
-  }
 
 
-  if(edit == TRUE){manipulation_list <- list(enabled = TRUE, editEdgeCols = c("arrows","color.color","width","label"),
-                                             editNodeCols = c("id","label","color.background","color.border","size","boderWidth"))}
+
+  if(edit == TRUE){manipulation_list <- list(enabled = TRUE, editEdgeCols = c("arrows","color","width","label"),#color.color
+                                             editNodeCols = c("id","label","color","size",))}#"color.background","color.border","boderWidth"
 
   if(edit == FALSE){manipulation_list <- list(enabled = FALSE)}
 
 
-  nodes_general_warnings(net_nodes = net_nodes)
-  edges_general_warnings(net_edges = net_edges)
-
-
-
-  if(!size_set_auto){net_nodes <- size_max(net_nodes = net_nodes, nodes_size_max = nodes_size_max)}
-
-  nodes_color_warnings(net_nodes = net_nodes, nodes_color = nodes_color, nodes_color_max = nodes_color_max,
-                       nodes_color_scaling = nodes_color_scaling, nodes_color_by = nodes_color_by,
-                       nodes_community = nodes_community)  # Check dependencies fpr nodes color   ADD Waring that the clomun internal_color should not exist?
-
-  if(!is.null(nodes_color_by)){
-    net_nodes <- vis_nodes_color(net_nodes = net_nodes, nodes_color = nodes_color,
-                                 nodes_color_max = nodes_color_max,nodes_color_scaling = nodes_color_scaling)}
-
-  #browser()
-  if(!("color.border" %in% names(net_nodes))){net_nodes$color.border <- net_nodes$color.background}
-
-  if("color" %in% names(net_edges)){net_edges$neg_color <- ifelse(net_edges$color < 0, 1, 0)
-  net_edges$color <- abs(net_edges$color)}
-
-  if(any(0 %in% net_edges$width)){net_edges <- filter_zero_edges(edges = net_edges)}
-  if(!is.null(edges_regulation)){net_edges <- vis_regulation(net_edges = net_edges, net_nodes = net_nodes, edges_regulation = edges_regulation)}
-  if(!width_set_auto){net_edges <- width_max(net_edges = net_edges, edges_width_max = edges_width_max)}
-
-  if(!is.null(edges_color_by)){
-    # Hier nochmal überlegen
-    edge_color_warnings(edges_color = edges_color, neg_edges_color = neg_edges_color)
-    net_edges <- e_color_max(net_edges, edges_color_max)
-    #browser()
-    net_edges <- vis_edge_color(net_edges = net_edges, edges_color = edges_color, #edges_color_by,
-                                neg_edges_color = neg_edges_color, edges_color_scaling = edges_color_scaling)}
-
-
-  net_edges$smooth <- edges_smooth
-
-
-  #setting seed
+    #setting seed
   if(use_seed != "random"){if(is.numeric(use_seed)){s1 <- use_seed}
     else{stop("use_seed must be numeric")}}
   if(use_seed == "random"){s1 <- floor(runif(1,-1000000,1000000))}
@@ -332,29 +252,9 @@ pecanVis <- function(nodes,edges,
   if(!is.null(p_id)){s1n <- paste((paste("network_id",p_id,"seed(", sep = "_")),s1,")", sep= "")}
   else{s1n <- paste((paste("network","seed(", sep = "_")),s1,")", sep= "")}
 
-  #pecan_edges <<- net_edges %>% dplyr::mutate(used_seed = s1,
-  #                               used_width = ifelse(width <= 4, width*1.25,ifelse(width <=6,width*1.5,width*2)))
 
-  #pecan_nodes <<- net_nodes %>% dplyr::mutate(used_seed = s1)
-  if(nodes_hide_isolated == TRUE){#browser()
-    net_nodes$isolated <- as.logical(!(net_nodes$id %in% c(net_edges$from, net_edges$to)))
-    #browser()
-    if(any(TRUE %in% net_nodes$isolated)){warning("Isolated nodes are hidden in the network")}
-    if(!is.null(nodes_hidden)){
-      net_nodes$hidden <- net_nodes$hidden + net_nodes$isolated
-      net_nodes$hidden <- ifelse(net_nodes$hidden >= 1,TRUE,FALSE)}
-    if(is.null(nodes_hidden)){net_nodes$hidden <- net_nodes$isolated
-    net_nodes <- net_nodes[,!colnames(net_nodes) %in% "isolated"]}
-
-    # browser()
-  }
-
-
-  #  net_edges <- net_edges %>% dplyr::mutate(width = ifelse(width <= 4, width*1.25,ifelse(width <=6,width*1.5,width*2)))
-  #list(enabled = TRUE, editEdgeCols = c("arrows","color","width","label"),
-  #     editNodeCols = c("id","label","color","size"))
   ### eingabe für visNetwork
-  if(export){nw <- visNetwork::visNetwork(nodes = net_nodes, edges = net_edges, width = c_width, height = c_height) %>%
+  if(export){nw <- visNetwork::visNetwork(nodes = p_vis_list$nodes, edges = p_vis_list$edges, width = c_width, height = c_height) %>%
     visNodes(chosen = FALSE) %>%
     visOptions(highlightNearest = TRUE,manipulation = manipulation_list) %>%
     visInteraction(selectable= TRUE) %>%
@@ -369,7 +269,7 @@ pecanVis <- function(nodes,edges,
 
 
 
-  if(!export){nw <- visNetwork::visNetwork(nodes = net_nodes, edges = net_edges, width = c_width, height = c_height) %>%
+  if(!export){nw <- visNetwork::visNetwork(nodes = p_vis_list$nodes, edges = p_vis_list$edges, width = c_width, height = c_height) %>%
     visNodes(chosen = FALSE) %>%
     visOptions(highlightNearest = TRUE,manipulation = manipulation_list) %>%
     visInteraction(selectable= TRUE) %>%
