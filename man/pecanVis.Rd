@@ -17,7 +17,7 @@ pecanVis(
   nodes_hide_isolated = FALSE,
   nodes_label = NULL,
   edges_color = "black",
-  neg_edges_color = "mediumblue",
+  neg_edges_color = NULL,
   edges_color_scaling = "scaled",
   edges_color_by = NULL,
   edges_color_max = NULL,
