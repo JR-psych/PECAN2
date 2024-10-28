@@ -237,7 +237,7 @@ pecanVis <- function(nodes,edges,
 
 
   if(edit == TRUE){manipulation_list <- list(enabled = TRUE, editEdgeCols = c("arrows","color","width","label"),#color.color
-                                             editNodeCols = c("id","label","color","size",))}#"color.background","color.border","boderWidth"
+                                             editNodeCols = c("id","label","color","size"))}#"color.background","color.border","boderWidth"
 
   if(edit == FALSE){manipulation_list <- list(enabled = FALSE)}
 
