@@ -26,6 +26,7 @@
 #' the population. This parameter should be a number between 0 and 1, indicating the proportion of the population below which nodes should be
 #' excluded if the attribute is not present for them. For example, if set to 0.2, nodes for which the attribute is not present in at least 20%
 #' of the population will be excluded from the analysis.
+#' @param absV Should absolute values be used to aggregate? Default is FALSE
 #' @export
 #' @return A list with the following components:
 #' \describe{
@@ -80,7 +81,7 @@
 
 pecanAggregate <- function(data, nodes = NULL,edges = NULL,
                            edges_sep = NULL, nodes_attribute = NULL,
-                           drop_nodes = NULL, drop_nodes_att = NULL, attribute_pattern = NULL){ # DO we need zero as NA for edges?
+                           drop_nodes = NULL, drop_nodes_att = NULL, attribute_pattern = NULL, absV = FALSE){
 
 
 if(!is.data.frame(data)){stop("data mus be a data.frame")}
@@ -88,26 +89,35 @@ data <- as.data.frame(data)
 
 if(is.null(edges_sep)){stop("Please set edges_sep")}
 edges_sep <- as.character(edges_sep)
-#if(!(nodes_center == "mean" | nodes_center == "median")){stop("Center must be mean or median")}
 
 
-#You should check how many columns there are
+
+
 
 if(as.numeric(nrow(data)) < 2){stop("data needs at least two rows")}
 if(is.null(nodes_attribute)){attribute_pattern <- NULL}
 
 agg_data <- data
 
-agg_nodes <- data[,nodes]
-agg_edges <- data[,edges]
+agg_nodes <- data[,nodes, drop = FALSE]
+agg_edges <- data[,edges, drop = FALSE]
+
+absolute_values <- FALSE
+if(absV == TRUE){agg_nodes <- abs(agg_nodes)
+                 agg_edges <- abs(agg_edges)
+                 absolute_values <- TRUE}
+
+
+
 
 nNodes_og <- as.numeric(base::ncol(agg_nodes))
 
-if(!is.null(nodes_attribute)){agg_att <- agg_data %>% select(nodes_attribute)
+if(!is.null(nodes_attribute)){agg_att <- agg_data[,nodes_attribute,drop = FALSE]
                               agg_att <- setNames(agg_att, gsub(attribute_pattern, "", colnames(agg_att)))
+                              if(absV == TRUE){agg_att <- abs(agg_att)}
                               if(ncol(agg_nodes) != ncol(agg_att)){
                                 warning("Nodes and Nodes attributes are not of the same length")}}
-agg_edges <- agg_data %>% select(edges)
+
 nEdges_og <- as.numeric(base::ncol(agg_edges))
 
 
@@ -116,24 +126,24 @@ if(any(agg_nodes == 0, na.rm = TRUE)){
                           warning("0 were found in nodes and were treated as missing")}
 
 if(any(agg_edges == 0, na.rm = TRUE)){agg_edges[agg_edges == 0] <- NA
-                          warning("0 were found in nodes and were treated as missing")}
+                          warning("0 were found in edges and were treated as missing")}
 
 if(!is.null(nodes_attribute)){
   if(any(agg_att == 0, na.rm = TRUE)){agg_att[agg_att == 0] <- NA
-                          warning("0 were found in nodes and were treated as missing")}}
+                          warning("0 were found in nodes attribute and were treated as missing")}}
 
 
 if(is.null(drop_nodes) == FALSE & is.null(drop_nodes_att)){
   if(is.numeric(drop_nodes) == FALSE){stop("drop_nodes must be numeric or NULL")}
   if((drop_nodes < 1 & drop_nodes > 0) == FALSE){stop("drop nodes must be between 0 and 1")}
-  #browser()
+
   not_na <- colMeans(!is.na(agg_nodes))### to get the percentages?
-  #browser()
-  keep_nodes <- not_na >= drop_nodes## das nuss noch verbessert werden, Muss das nicht auch irgendwie für nodes 2 gelten?
-  #browser()
+
+  keep_nodes <- names(not_na)[not_na >= drop_nodes]
+
   agg_nodes <- agg_nodes[,keep_nodes,drop = FALSE]
- # browser()
-  if(!is.null(nodes_attribute)){agg_att <- agg_att[,keep_nodes]
+
+  if(!is.null(nodes_attribute)){agg_att <- agg_att[,keep_nodes, drop = FALSE]
                               #  colnames(agg_att) <- paste0(colnames(agg_att),attribute_pattern) bruachen wir vllt nicht
                                 }
 
@@ -144,9 +154,9 @@ if(is.null(drop_nodes) & is.null(drop_nodes_att) == FALSE){
   if((drop_nodes_att < 1 & drop_nodes_att > 0) == FALSE){stop("drop_nodes_att must be between 0 and 1")}
 
   not_na <- colMeans(!is.na(agg_att))### to get the percentages?
-  keep_nodes <- names(not_na >= drop_nodes_att)
-  agg_att <- agg_att[,keep_nodes]
-  agg_nodes <- agg_nodes[,keep_nodes]
+  keep_nodes <- names(not_na)[not_na >= drop_nodes_att]
+  agg_att <- agg_att[,keep_nodes, drop = FALSE]
+  agg_nodes <- agg_nodes[,keep_nodes, drop = FALSE]
 }
 
 if(is.null(drop_nodes) == FALSE & is.null(drop_nodes_att) == FALSE){
@@ -155,15 +165,15 @@ if(is.null(drop_nodes) == FALSE & is.null(drop_nodes_att) == FALSE){
   if(is.numeric(drop_nodes) == FALSE){stop("drop_nodes must be numeric or NULL")}
   if((drop_nodes < 1 & drop_nodes > 0) == FALSE){stop("drop nodes must be between 0 and 1")}
    not_na_nodes <- colMeans(!is.na(agg_nodes))### to get the percentages?
-   keep_nodes <- names(not_na_nodes >= drop_nodes)## das nuss noch verbessert werden, Muss das nicht auch irgendwie für nodes 2 gelten?
+   keep_nodes <- names(not_na_nodes)[not_na_nodes >= drop_nodes]## das nuss noch verbessert werden, Muss das nicht auch irgendwie für nodes 2 gelten?
 
    not_na_att <- colMeans(!is.na(agg_att))### to get the percentages?
-   keep_nodes_att <- names(not_na_att >= drop_nodes_att)
+   keep_nodes_att <- names(not_na_att)[not_na_att >= drop_nodes_att]
 
    keep_combined <- base::intersect(keep_nodes,keep_nodes_att)
 
-   agg_nodes <- agg_nodes[,keep_combined]
-   agg_att <- agg_att[,keep_combined]
+   agg_nodes <- agg_nodes[,keep_combined, drop = FALSE]
+   agg_att <- agg_att[,keep_combined, drop = FALSE]
 }
 
 node_names <- colnames(agg_nodes)
@@ -176,7 +186,7 @@ for (i in seq_along(edge_names)) {
     keep_edges <- cbind(keep_edges,edge_names[i])}
     }
 keep_edges <- as.vector(keep_edges)
-agg_edges <- agg_edges[,keep_edges]
+agg_edges <- agg_edges[,keep_edges, drop = FALSE]
 
 if(nEdges_og != as.numeric(base::ncol(agg_edges))){
   warning("Edges have been dropped as no reference node was found")}
@@ -229,18 +239,22 @@ rownames(edges_mean) <- NULL
 
 #edges_mean <- as.data.frame(t(edges_mean))
 # Check if calculating SD is possible
+sd_col_0 <- NULL
+
 for (col in names(agg_edges)) {
-  if (sum(!is.na(agg_edges[[col]])) < 2) {
-    warning(paste("sd cannot be calculated for edge '", col, "'. Not enough non-NA values. Therefore
+  if (sum(!is.na(agg_edges[[col]])) == 1) {
+    warning(paste("sd cannot be calculated for edge '", col, "'. Only one non-NA value. Therefore
                   sd has been set to 0"))
-  }
+    sd_col_0 <- c(sd_col_0,col)
+    }
 }
 
 edges_sd <- data.frame(sd = apply(agg_edges, 2, sd, na.rm = TRUE))
-edges_sd[is.na(edges_sd)] <- 0
+
+#edges_sd[is.na(edges_sd)] <- 0
 edges_sd$edges <- rownames(edges_sd)
 rownames(edges_sd) <- NULL
-
+if(!is.null(sd_col_0)){edges_sd$sd[which(edges_sd$edges %in% sd_col_0)] <- 0}
 #edges_sd <- as.data.frame(t(edges_sd))
 ###Median + IQR
 edges_median <- data.frame(median = apply(agg_edges, 2, median, na.rm = TRUE))
@@ -274,6 +288,8 @@ for (i in seq_along(edge_names)) {
 #browser()
 edge_presence_matrix <- as.matrix(edge_presence_matrix)
 agg_edges_0 <- agg_edges_0 * ifelse(edge_presence_matrix, 1, NA)
+# it works because 0*Na is NA.
+
 
 # How many percent could have it?
 edges_per_ch <- data.frame(per_ch = colMeans(edge_presence_matrix))
@@ -294,17 +310,20 @@ edges_mean_ip$edges <- rownames(edges_mean_ip)
 rownames(edges_mean_ip) <- NULL
 
 # Check if calculating SD is possible
+sd_col_0_ip <- NULL
 for (col in names(agg_edges_0)) {
-  if (sum(!is.na(agg_edges_0[[col]])) < 2) {
-    warning(paste("sd_ip cannot be calculated for edge '", col, "'. Not enough non-NA values. Therefore
+  if (sum(!is.na(agg_edges_0[[col]])) == 1) {
+    warning(paste("sd_ip cannot be calculated for edge '", col, "'. Only one non-NA value. Therefore
                   sd_ip has been set to 0"))
-  }
+    sd_col_0_ip <- c(sd_col_0_ip,col)
+    }
 }
 
 #edges_mean_ip <- as.data.frame(t(edges_mean_ip))
 edges_sd_ip <- data.frame(sd_ip = apply(agg_edges_0, 2, sd, na.rm = TRUE))
 edges_sd_ip$edges <- rownames(edges_sd_ip)
 rownames(edges_sd_ip) <- NULL
+if(!is.null(sd_col_0_ip)){edges_sd_ip$sd_ip[which(edges_sd_ip$edges %in% sd_col_0_ip)] <- 0}
 #edges_sd_ip <- as.data.frame(t(edges_sd_ip))}
 
 
@@ -362,16 +381,21 @@ agg_nodes_mean$nodes <- rownames(agg_nodes_mean)
 rownames(agg_nodes_mean) <- NULL
 
 # Check if calculating SD is possible
+nodes_sd_col_0 <- NULL
+
 for (col in names(agg_nodes)) {
-  if (sum(!is.na(agg_nodes[[col]])) < 2) {
-    warning(paste("sd cannot be calculated for node '", col, "'. Not enough non-NA values. Therefore
+  if (sum(!is.na(agg_nodes[[col]])) == 1) {
+    warning(paste("sd cannot be calculated for node '", col, "'. Only one non-NA value. Therefore
                   sd has been set to 0"))
+    nodes_sd_col_0 <- c(nodes_sd_col_0,col)
   }
 }
+
 #agg_nodes_mean <- as.data.frame(t(agg_nodes_center))
 agg_nodes_sd <- data.frame(sd = apply(agg_nodes, 2, sd, na.rm = TRUE))
 agg_nodes_sd$nodes <- rownames(agg_nodes_sd)
 rownames(agg_nodes_sd) <- NULL
+if(!is.null(nodes_sd_col_0)){agg_nodes_sd$sd[which(agg_nodes_sd$nodes %in% nodes_sd_col_0)] <- 0}
 #agg_nodes_sd <- as.data.frame(t(agg_nodes_spread))
 
 agg_nodes_median <- data.frame(median = apply(agg_nodes, 2, median, na.rm = TRUE))
@@ -396,9 +420,22 @@ agg_nodes_mean_oa$nodes <- rownames(agg_nodes_mean_oa)
 rownames(agg_nodes_mean_oa) <- NULL
 
 #agg_nodes_mean <- as.data.frame(t(agg_nodes_center))
+nodes_sd_col_oa <- NULL
+
+for (col in names(agg_nodes_0)) {
+  if (sum(!is.na(agg_nodes_0[[col]])) == 1) {
+    warning(paste("sd cannot be calculated for node '", col, "'. Only one non-NA value. Therefore
+                  sd has been set to 0"))
+    nodes_sd_col_oa <- c(nodes_sd_col_oa,col)
+  }
+}
+
+
+
 agg_nodes_sd_oa <- data.frame(sd_oa = apply(agg_nodes_0, 2, sd, na.rm = TRUE))
 agg_nodes_sd_oa$nodes <- rownames(agg_nodes_sd_oa)
 rownames(agg_nodes_sd_oa) <- NULL
+if(!is.null(nodes_sd_col_oa)){agg_nodes_sd_oa$sd[which(agg_nodes_sd_oa$nodes %in% nodes_sd_col_oa)] <- 0}
 #agg_nodes_sd <- as.data.frame(t(agg_nodes_spread))
 
 agg_nodes_median_oa <- data.frame(median_oa = apply(agg_nodes_0, 2, median, na.rm = TRUE))
@@ -419,7 +456,8 @@ agg_info <- list(drop_nodes = drop_nodes,
                  nEdges = as.numeric(base::ncol(agg_edges)),
                  nEdges_og = nEdges_og,
                  edges_sep = edges_sep,
-                 attribute_pattern = attribute_pattern)
+                 attribute_pattern = attribute_pattern,
+                 absolute_values = absolute_values)
 
 # Split nodes and attribute again because
 

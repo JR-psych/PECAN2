@@ -12,7 +12,8 @@ pecanAggregate(
   nodes_attribute = NULL,
   drop_nodes = NULL,
   drop_nodes_att = NULL,
-  attribute_pattern = NULL
+  attribute_pattern = NULL,
+  absV = FALSE
 )
 }
 \arguments{
@@ -44,6 +45,8 @@ of the population will be excluded from the analysis.}
 pattern used in the column names of the attributes to assign them to the nodes. The column names of the attributes must be constructed
 by combining the names of the nodes with this specified pattern. For example, if the pattern is ".freq", and the nodes are named "pain"
 and "insomnia", the attribute columns should be named "pain.freq" and "insomnia.freq".}
+
+\item{absV}{Should absolute values be used to aggregate? Default is FALSE}
 }
 \value{
 A list with the following components:
