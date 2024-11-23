@@ -14,9 +14,9 @@
 #' @import dplyr
 
 #'
-#' @param cen_edges
-#' @param in_df
-#' @param out_in_value
+#' @param cen_edges cen_edges df
+#' @param in_df df containing the in degree values
+#' @param out_in_value df containing in degree and out degree
 centrality_sev <- function(cen_edges,in_df,out_in_value,cen_nodes){
 
 # Assign the complete indegree of a node tp all incoming edges
@@ -30,9 +30,9 @@ nodes_id_value <- cen_nodes[,c("id","value")]
 colnames(nodes_id_value)[which(names(nodes_id_value) == "id")] <- "to"
 
 edges_indegree_nodes <- dplyr::full_join(edges_indegree,nodes_id_value, by = "to")
-
+edges_indegree_nodes  <- edges_indegree_nodes[!is.na(edges_indegree_nodes$from),,drop = FALSE]
 # Calculate the Severity Weigthed Outdegree for each edge
-edges_indegree_nodes <- edges_indegree_nodes %>% dplyr::mutate(iwo = ((strength/in_degree)*value))
+edges_indegree_nodes <- edges_indegree_nodes %>% dplyr::mutate(iwo = (strength * (strength/in_degree) * value))
 
 # Sum up the severity weigthed outgeree for each node (sum of outgoing edges)
 
@@ -44,6 +44,9 @@ sev_w_od <- edges_indegree_nodes %>%
 # Create final data frame
 
 final_df <- dplyr::full_join(out_in_value,sev_w_od, by = "id")
+final_df[is.na(final_df)] <- 0
+final_df$sevwod_combined <- final_df$sev_w_outdegree + final_df$value
+
 
 final_df}
 
