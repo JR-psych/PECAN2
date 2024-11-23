@@ -9,15 +9,23 @@ pecanCen(
   nodes,
   centrality_by,
   sev_weighted = NULL,
-  nodes_label = "auto"
+  nodes_label = NULL,
+  absV = FALSE
 )
 }
 \arguments{
-\item{edges}{DF with edge columns "from", "to", "strength"}
+\item{edges}{edges data frame with a "from" and "to" column}
 
-\item{nodes}{DF with nodes columns "id", "value"}
+\item{nodes}{nodes data frame with an "id" column}
 
-\item{sev_weighted}{logical, should a severity weigthed out_degreee be calculated?}
+\item{centrality_by}{column name which contains the edge strengths in the edges data frame}
+
+\item{sev_weighted}{Should severity weighted out degree be calculated. Must be set to the column name of the nodes data frame containing the node severity values.
+Default is NULL.}
+
+\item{nodes_label}{If node labels should be on the output this can be set to the column name of the nodes data frame containing these labels. Default is NULL}
+
+\item{absV}{Logical. Set to TRUE to calculate nodes Strength by using absolute values. Set to FALSE to calculate Expected Influence. Default is FALSE}
 }
 \description{
 Title pecanCen
