@@ -6,6 +6,13 @@
 \usage{
 centrality_sev(cen_edges, in_df, out_in_value, cen_nodes)
 }
+\arguments{
+\item{cen_edges}{cen_edges df}
+
+\item{in_df}{df containing the in degree values}
+
+\item{out_in_value}{df containing in degree and out degree}
+}
 \value{
 A DF with severity weighted out_degree centrality measures: See Klintwall 2021
 }
