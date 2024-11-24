@@ -8,7 +8,7 @@ Description: Visualization of PECAN-networs and supporting the workflow of PECAN
 License: GNU General Public License v2.0
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     dplyr,
     igraph,
