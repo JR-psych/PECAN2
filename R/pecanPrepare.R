@@ -181,6 +181,28 @@ pecanPrepare <- function(nodes,edges,
 
   net_edges <- edges[,c("from","to"), drop = FALSE]
   net_edges <- as.data.frame(net_edges)
+  net_edges_og <- net_edges
+
+  net_nodes <- nodes[,c("id"), drop = FALSE]
+  net_nodes <- as.data.frame(net_nodes)
+  if(nrow(net_nodes) == 0){stop("There must be at least one node in the network")}
+
+  keep_edges <- NULL
+
+  for (i in seq_len(nrow(net_edges))){
+    if(net_edges[[i,"from"]] %in% net_nodes$id & net_edges[[i,"to"]] %in% net_nodes$id){
+      keep_edges <- cbind(keep_edges,i)}
+  }
+  keep_edges <- as.vector(keep_edges)
+  net_edges <- net_edges[keep_edges,,drop = FALSE]
+  rownames(net_edges) <- NULL
+
+  if(as.numeric(nrow(net_edges_og)) != as.numeric(base::nrow(net_edges))){
+    warning("Edges have been dropped as no reference node was found")}
+
+
+
+
 
   if(nrow(net_edges) > 0){
   # If width is numeric every edge gets the number
@@ -247,9 +269,7 @@ pecanPrepare <- function(nodes,edges,
 
   }
 
-  net_nodes <- nodes[,c("id"), drop = FALSE]
-  net_nodes <- as.data.frame(net_nodes)
-  if(nrow(net_nodes) == 0){stop("There must be at least one node in the network")}
+#Prepare nodes
 
   if(is.numeric(nodes_size)){net_nodes$size <- nodes_size
   size_set_auto <- TRUE}
