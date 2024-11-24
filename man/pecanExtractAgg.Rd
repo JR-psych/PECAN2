@@ -11,7 +11,6 @@ pecanExtractAgg(
   attributes_include = NULL,
   nodes_drop_NA0 = NULL,
   edges_drop_NA0 = NULL,
-  attribute_drop_NA0 = NULL,
   edges_direction = "from_to"
 )
 }
