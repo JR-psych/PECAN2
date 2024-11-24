@@ -78,8 +78,10 @@ pecanCen <- function(edges,nodes,
     if(cen_edges[[i,"from"]] %in% cen_nodes$id & cen_edges[[i,"to"]] %in% cen_nodes$id){
       keep_edges <- cbind(keep_edges,i)}
   }
+
   keep_edges <- as.vector(keep_edges)
   cen_edges <- cen_edges[keep_edges,,drop = FALSE]
+  rownames(cen_edges) <- NULL
 
   if(as.numeric(nrow(cen_edges_og)) != as.numeric(base::nrow(cen_edges))){
     warning("Edges have been dropped as no reference node was found")}
