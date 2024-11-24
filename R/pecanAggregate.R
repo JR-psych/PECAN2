@@ -181,12 +181,13 @@ edge_names <- colnames(agg_edges)
 keep_edges <- NULL
 
 for (i in seq_along(edge_names)) {
-  nodes_in_edge <- unlist(strsplit(as.character(edge_names[i]), edges_sep))
+  nodes_in_edge <- unlist(strsplit(as.character(edge_names[i]), edges_sep, fixed = TRUE))
   if(nodes_in_edge[1] %in% node_names & nodes_in_edge[2] %in% node_names){
     keep_edges <- cbind(keep_edges,edge_names[i])}
     }
 keep_edges <- as.vector(keep_edges)
 agg_edges <- agg_edges[,keep_edges, drop = FALSE]
+rownames(agg_edges) <- NULL
 
 if(nEdges_og != as.numeric(base::ncol(agg_edges))){
   warning("Edges have been dropped as no reference node was found")}
@@ -279,7 +280,7 @@ edge_presence_matrix <- agg_edges_0
 edge_presence_matrix[,] <- TRUE
 # Update the edge present matrix based on node presence
 for (i in seq_along(edge_names)) {
-  nodes_in_edge <- unlist(strsplit(as.character(edge_names[i]), edges_sep))
+  nodes_in_edge <- unlist(strsplit(as.character(edge_names[i]), edges_sep, fixed = TRUE))
   edge_presence_matrix[, i] <- rowSums(node_presence_matrix[, nodes_in_edge]) == 2
 }
 # Es wird die matrix durch eine summe rwereitert. Wenn beide Knotenpunkt da sind kommt ein TRUE und wenn nicht dann kommt ein false
