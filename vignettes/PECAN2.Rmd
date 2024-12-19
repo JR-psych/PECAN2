@@ -18,9 +18,3 @@ knitr::opts_chunk$set(
 library(PECAN2)
 ```
 
-
-"lulululul"
-```{r}
-
-```
-
