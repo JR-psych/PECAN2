@@ -27,6 +27,7 @@
 #' excluded if the attribute is not present for them. For example, if set to 0.2, nodes for which the attribute is not present in at least 20%
 #' of the population will be excluded from the analysis.
 #' @param absV Should absolute values be used to aggregate? Default is FALSE
+#'
 #' @export
 #' @return A list with the following components:
 #' \describe{

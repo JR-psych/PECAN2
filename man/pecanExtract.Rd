@@ -6,8 +6,7 @@
 \usage{
 pecanExtract(
   data,
-  id_col = NULL,
-  id_number = NULL,
+  id_row = 1,
   nodes,
   edges,
   edges_direction = "from_to",
@@ -16,7 +15,9 @@ pecanExtract(
   label_pattern = NULL,
   nodes_attributes = NULL,
   attribute_pattern = NULL,
-  attribute_name = "attribute"
+  drop_nodes_NA0 = "na_zero",
+  drop_edges_NA0 = "na_zero",
+  drop_attributes_NA0 = "na_zero"
 )
 }
 \arguments{

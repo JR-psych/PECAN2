@@ -6,6 +6,9 @@
 \usage{
 vis_nodes_color_max(net_nodes, nodes_color_max)
 }
+\arguments{
+\item{vis.env}{}
+}
 \description{
 Title vis_nodes_color_max
 }
