@@ -17,14 +17,12 @@ pecanAggregate(
 )
 }
 \arguments{
-\item{data}{This parameter should be a dataframe where each row represents a person or timepoint, and the columns contain
-specific values for the nodes and edges corresponding to that person or timepoint.}
+\item{data}{This parameter should be a dataframe where each row represents a person or timepoint, and the columns contain specific values for the nodes and edges corresponding to that person or timepoint.}
 
 \item{nodes}{Specifies the positions of nodes columns in the dataframe. E.g. 1:10}
 
-\item{edges}{Specifies the positions of edges columns in the dataframe. E.g. 11:100.  Each edge should be represented by a
-combination of node names separated by a specified separator. For example, if an edge connects nodes "pain" and "insomnia",
-it could be represented as "pain_insomnia" in the dataframe.}
+\item{edges}{Specifies the positions of edges columns in the dataframe. E.g. 11:100.  Each edge should be represented by a combination of node names separated by a specified separator.
+For example, if an edge connects nodes "pain" and "insomnia", it could be represented as "pain_insomnia" in the dataframe.}
 
 \item{edges_sep}{Specifies the separator for the edges in the dataframe. E.g. “_”}
 
@@ -32,19 +30,19 @@ it could be represented as "pain_insomnia" in the dataframe.}
 information collected alongside the main attribute (e.g., frequency) for each node. For example, if data is collected on both
 frequency and severity for each node, these columns could contain the severity values.}
 
-\item{drop_nodes}{Specifies the threshold for excluding nodes not present in a certain proportion of the population. This parameter should
-be a number between 0 and 1, indicating the proportion of the population below which nodes should be excluded. For example, if set to 0.2,
-nodes that are not present in at least 20% of the population will be excluded from the analysis.}
-
-\item{drop_nodes_att}{Specifies the threshold for excluding nodes based on whether the attribute is not present in a certain proportion of
-the population. This parameter should be a number between 0 and 1, indicating the proportion of the population below which nodes should be
-excluded if the attribute is not present for them. For example, if set to 0.2, nodes for which the attribute is not present in at least 20%
-of the population will be excluded from the analysis.}
-
-\item{attribute_pattern}{Specifies the pattern used in the attributes columns. This parameter should be a character specifying the
+\item{drop_nodes}{Specifies the pattern used in the attributes columns. This parameter should be a character specifying the
 pattern used in the column names of the attributes to assign them to the nodes. The column names of the attributes must be constructed
 by combining the names of the nodes with this specified pattern. For example, if the pattern is ".freq", and the nodes are named "pain"
 and "insomnia", the attribute columns should be named "pain.freq" and "insomnia.freq".}
+
+\item{drop_nodes_att}{Specifies the threshold for excluding nodes not present in a certain proportion of the population. This parameter should
+be a number between 0 and 1, indicating the proportion of the population below which nodes should be excluded. For example, if set to 0.2,
+nodes that are not present in at least 20 percent of the population will be excluded from the analysis.}
+
+\item{attribute_pattern}{Specifies the threshold for excluding nodes based on whether the attribute is not present in a certain proportion of
+the population. This parameter should be a number between 0 and 1, indicating the proportion of the population below which nodes should be
+excluded if the attribute is not present for them. For example, if set to 0.2, nodes for which the attribute is not present in at least 20%
+of the population will be excluded from the analysis.}
 
 \item{absV}{Should absolute values be used to aggregate? Default is FALSE}
 }
